@@ -1,6 +1,6 @@
 # MetroMate
 
-A project for our college designed using data structures of C++ to simulate a metro system where 
+A project for our college designed using data structures of C++ to simulate a metro system where   
 Users can:
 
 * Create an account.
