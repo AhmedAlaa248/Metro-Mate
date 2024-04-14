@@ -1,0 +1,6 @@
+﻿  Admin.cpp
+  Source.cpp
+C:\Users\Ahmed Alaa\source\repos\MetroMate\Source.cpp(5,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  User.cpp
+  Generating Code...
+  MetroMate.vcxproj -> C:\Users\Ahmed Alaa\source\repos\MetroMate\x64\Debug\MetroMate.exe

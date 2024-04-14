@@ -1,12 +1,16 @@
-# Uni-management-system
+# MetroMate
 
-A project for our college requires the use of a suitable data structure to store different courses and their prerequisites and based on this it will:
+A project for our college designed using data structures of C++ to simulate a metro system where 
+Users can:
 
-* allow any adimn to add students.
-* add new course and its requirments.
-* edit all course data.
+* Create an account.
+* Purchase three diffrent types of subscriptions.
+* Manage thier rides and subscribtions.
 
-* allow any student to take any course or not.
-* show their courses and filter them.
-* let the student know his GPA.
+Admins can:
 
+* Add, edit, delete user accounts and metro staions.
+* Adjust fare rates for different metro stages.
+* Simulate trains and handle scheduking.
+
+MetroMate offers a unique blend of functionality, focusing on subscription management, fare calculation, and ride tracking, all through a text-based interface.
