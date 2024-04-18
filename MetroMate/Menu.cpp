@@ -18,6 +18,61 @@ bool Menu::login() {
 		return 0;
 }
 
+void Menu::signUp()
+{
+	User user;
+	while (true)
+	{
+		cout << "Enter your user name:\n";
+		cin >> user.name;
+
+		//TODO send the user list to the function
+		
+		//if (validator.notUsedUserName(user.name, listOfUserNames))
+			break;
+		//else
+			//cout << "This username is taken. Try another one.";
+	}
+	
+	string password;
+	bool goodPassword = false;
+	do
+	{
+		cout << "Enter your password:\n";
+		cin >> password;
+		cout << "Enter retype password:\n";
+		cin >> user.password;
+		
+		
+		if (!validator.isTheCorrectPassword(user, password))
+		{
+			cout << "Doesn't match!\n";
+			continue;
+		}
+		else if (!validator.isStrongPassword(password))
+		{
+			cout << "Week password choose strongest one.\n";
+			continue;
+		}
+
+		goodPassword = true;
+
+	} while (!goodPassword);
+
+	while (true)
+	{
+		cout << "Enter your email:\n";
+		cin >> user.email;
+		if (validator.isValidEmailAddress(user.email))
+			break;
+		else
+			cout << "Invalid email, please try again\n";
+	}
+	
+	cout << "Account created successfully.\n";
+	//TODO add the user to the list
+}
+
 int Menu::adminMenu()
 {
 	int choice;
@@ -161,5 +216,43 @@ int Menu::adminMenu()
 
 int Menu::userMenu()
 {
-	return 0;
+	int choice;
+	User user;
+	cout << "Hello " + user.name + "\n";
+	cout << "1. Purchase subscription.\n2. Manage subscription.\n3. Check in.\n4. Check out.\n5. View ride history.\n6. Update info.\n";
+	cout << "Choose your choice:\n";
+	cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		//TODO call purchase FN.
+		cout << "Purchase.\n";
+		break;
+	case 2:
+		//TODO call manage subscription FN.
+		cout << "Subscription.\n";
+		break;
+	case 3:
+		//TODO call checkIn FN.
+		cout << "checked In.\n";
+		break;
+	case 4:
+		//TODO call checkOut FN.
+		cout << "Checked out.\n";
+		break;
+	case 5:
+		//TODO call view rides history FN.
+		cout << "Rides history.\n";
+		break;
+	case 6:
+		//TODO call update user info FN.
+		cout << "info updated.\n";
+		break;
+	default:
+		cout << "Invalid choice\n";
+		break;
+	}
+	//TODO edit the return value
+	return choice;
 }
