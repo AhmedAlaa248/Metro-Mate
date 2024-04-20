@@ -24,23 +24,26 @@ void Menu::signUp()
 	while (true)
 	{
 		cout << "Enter your user name:\n";
-		cin >> user.name;
+		cin >> user.userName;
 
 		//TODO send the user list to the function
 		
-		//if (validator.notUsedUserName(user.name, listOfUserNames))
+		//if (validator.notUsedUserName(user.userName, listOfUserNames))
 			break;
 		//else
 			//cout << "This username is taken. Try another one.";
 	}
 	
+	cout << "Enter your name:\n";
+	cin >> user.name;
+
 	string password;
 	bool goodPassword = false;
 	do
 	{
 		cout << "Enter your password:\n";
 		cin >> password;
-		cout << "Enter retype password:\n";
+		cout << "Confirm your password:\n";
 		cin >> user.password;
 		
 		
@@ -69,7 +72,7 @@ void Menu::signUp()
 			cout << "Invalid email, please try again\n";
 	}
 	
-	cout << "Account created successfully.\n";
+	cout << "Account created successfully.\n\n";
 	//TODO add the user to the list
 }
 
@@ -77,7 +80,7 @@ int Menu::adminMenu()
 {
 	int choice;
 	cout << "Hello boss!\n";
-	cout << "1. Manage users\n2. Manage stations\n3. Manage subscriptions\n4. Manage rides\n5. Mange fare\n0. Exit\n";
+	cout << "1. Manage users\n2. Manage stations\n3. Manage subscriptions\n4. Manage rides\n5. Mange fare\n0. Log out\n";
 	cout << "Choose your choice:\n";
 	cin >> choice;
 
@@ -219,12 +222,14 @@ int Menu::userMenu()
 	int choice;
 	User user;
 	cout << "Hello " + user.name + "\n";
-	cout << "1. Purchase subscription.\n2. Manage subscription.\n3. Check in.\n4. Check out.\n5. View ride history.\n6. Update info.\n";
+	cout << "1. Purchase subscription.\n2. Manage subscription.\n3. Check in.\n4. Check out.\n5. View ride history.\n6. Update info.\n0. Log out\n";
 	cout << "Choose your choice:\n";
 	cin >> choice;
 
 	switch (choice)
 	{
+	case 0:
+		break;
 	case 1:
 		//TODO call purchase FN.
 		cout << "Purchase.\n";

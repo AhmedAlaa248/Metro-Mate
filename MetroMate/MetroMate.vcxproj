@@ -129,15 +129,21 @@
   <ItemGroup>
     <ClCompile Include="Admin.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Ride.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Station.cpp" />
     <ClCompile Include="Subscription.cpp" />
+    <ClCompile Include="SubscriptionPlan.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="Validator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Ride.h" />
+    <ClInclude Include="Station.h" />
     <ClInclude Include="Subscription.h" />
+    <ClInclude Include="SubscriptionPlan.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Validator.h" />
   </ItemGroup>
