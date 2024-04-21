@@ -1,4 +1,3 @@
-
 #pragma once
 #include <iostream>
 #include <string>
@@ -8,6 +7,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
+
 using namespace std;
 
 class Station
@@ -23,6 +23,7 @@ public:
 	long long numOfPassengers;
 	unordered_map<int, unordered_set<int>> adjacencyList;
 	vector<vector<int>> allPaths;
+
 	Station();
 	Station(string n, int line);
 	void rideStarted(string type);
@@ -30,6 +31,6 @@ public:
 	void removeConnection(int station1, int station2);
 	void removeStation(int station);
 	void addStationWithConnections(int station);
-	void displaYDetails(string type);
+	void displayDetails(string type);
 
 };

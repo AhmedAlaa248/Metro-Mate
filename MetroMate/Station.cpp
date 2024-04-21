@@ -55,7 +55,8 @@ void Station::addStationWithConnections(int stationId) {
 		addConnection(stationId, connection);
 	}
 }
-void Station::displaYDetails(string type)
+
+void Station::displayDetails(string type)
 {
 	cout << "Station details:\n";
 	cout << "name: " + name;
