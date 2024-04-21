@@ -8,10 +8,12 @@ class User
 public:
 	int id, balance;
 	string name;
-	string username;
+	string userName;
 	string password;
 	string email;
 	Subscription subscription;
 	Ride ride;
+
+	User();
 };
 

@@ -24,10 +24,6 @@ public:
 		: plan_id(plan_id), plan_name(plan_name), duration(duration), price(price), trips(trips), stages(stages){}
 
 
-
-
-
-
     // Setters
     void setType(int newtype);
     void setPrice(int newPrice);
@@ -38,7 +34,6 @@ public:
 	void settrips(int newtrips);
 	void setstages(int newstages);
 
-
     // Getters
     int getType() const;
     int getPrice() const;
@@ -48,7 +43,6 @@ public:
 	int getstages() const;
 	int gettrips() const;
 	string getplan_name() const;
-
 
 	int calcFare(int subscriptionType, int stage);
 	int calculateStudentFare(int stage) const;
