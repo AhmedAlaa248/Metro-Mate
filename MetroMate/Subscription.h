@@ -8,13 +8,16 @@ class Subscription
     string Type;
     string Sub_datee;
     string End_datee;
-    int remaining_rides;
+    int remaining_rides ;
     int user_idd;
     int sub_idd;
+    int stageNumber;
 public:
     Subscription();
     Subscription(int id, string type, string subDate,
         string endDate, int remainingRides, int userId,
         int subId);
+    int stages(int numOfStations);
+    void printDetails(int type, int duration);
 };
 
