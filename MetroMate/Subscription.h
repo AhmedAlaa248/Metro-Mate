@@ -12,6 +12,7 @@ class Subscription
     int user_idd;
     int sub_idd;
 public:
+    Subscription();
     Subscription(int id, string type, string subDate,
         string endDate, int remainingRides, int userId,
         int subId);

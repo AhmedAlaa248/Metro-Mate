@@ -3,6 +3,10 @@
 #include <string>
 using namespace std;
 
+Subscription::Subscription()
+{
+}
+
 Subscription::Subscription(int id, string type, string subDate, string endDate, int remainingRides, int userId, int subId) {
     ID = id;
     Type = type;

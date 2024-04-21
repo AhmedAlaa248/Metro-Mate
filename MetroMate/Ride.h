@@ -9,6 +9,7 @@ public:
 	string source, destination;
 	int station_id;
 public:
+	Ride();
 	Ride(int rideId, string src, string dest, int stationId)
 		: id(rideId), source(src), destination(dest), station_id(stationId) {}
 };

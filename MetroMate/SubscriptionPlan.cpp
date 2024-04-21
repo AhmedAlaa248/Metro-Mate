@@ -1,4 +1,4 @@
-#include"Subscription plan.h"
+#include"SubscriptionPlan.h"
 
 
 	//setters
@@ -240,7 +240,7 @@
 	}
 
 
-	int main() {
+	/*int main() {
 		sqlite3* db;
 		int rc = sqlite3_open("mydb.db", &db);
 		if (rc)
@@ -263,6 +263,6 @@
 		return 0;
 	}
 
-
+*/
 
 
