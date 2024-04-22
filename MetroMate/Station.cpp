@@ -102,7 +102,7 @@ void Station::addConnectionToStation(Station& station, unordered_map<int, Statio
 			if (response.first)
 				addConnection(station.id, response.second.id);
 			else
-				cout << "There is no " + connection + "station in our databse.";
+				cout << "There is no station named " + connection + " in our databse.";
 			break;
 		default:
 			cout << "Invalid choice\n";

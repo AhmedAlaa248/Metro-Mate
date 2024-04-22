@@ -33,7 +33,7 @@ public:
 	string getName() const;
 	int getLineNum() const;
 
-	pair<bool, Station> findStationByName(string name, unordered_map<int, Station> stations);
+	static pair<bool, Station> findStationByName(string name, unordered_map<int, Station> stations);
 	void rideStarted(string type);
 	void addConnection(int station1, int station2);
 	void removeConnection(int station1, int station2);
