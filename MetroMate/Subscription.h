@@ -2,6 +2,8 @@
 using namespace std;
 #include <iostream>
 #include <string>
+#include "SubscriptionPlan.h"
+
 class Subscription
 {
     int ID;
@@ -12,12 +14,15 @@ class Subscription
     int user_idd;
     int sub_idd;
     int stageNumber;
+     SubscriptionPlan subPlan;
 public:
     Subscription();
     Subscription(int id, string type, string subDate,
         string endDate, int remainingRides, int userId,
         int subId);
-    int stages(int numOfStations);
-    void printDetails(int type, int duration);
+    int stages();
+    void printDetails();
+    
+
 };
 

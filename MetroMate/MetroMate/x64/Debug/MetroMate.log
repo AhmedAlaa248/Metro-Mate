@@ -1,0 +1,12 @@
+﻿  Menu.cpp
+  MetroSystem.cpp
+  Ride.cpp
+  Source.cpp
+C:\Users\omark\Desktop\Metro-Mate\MetroMate\Source.cpp(7,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Station.cpp
+  Subscription.cpp
+  SubscriptionPlan.cpp
+  User.cpp
+  Validator.cpp
+  Generating Code...
+  MetroMate.vcxproj -> C:\Users\omark\Desktop\Metro-Mate\MetroMate\x64\Debug\MetroMate.exe

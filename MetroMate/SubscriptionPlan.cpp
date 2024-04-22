@@ -1,7 +1,11 @@
 #include"SubscriptionPlan.h"
 
 
-	//setters
+SubscriptionPlan::SubscriptionPlan()
+{
+}
+
+//setters
 	void SubscriptionPlan::setType(int newtype)
 	{
 		type = newtype;

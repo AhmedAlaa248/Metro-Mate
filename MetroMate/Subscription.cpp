@@ -1,7 +1,4 @@
 #include "Subscription.h"
-#include <iostream>
-#include <string>
-using namespace std;
 
 Subscription::Subscription()
 {
@@ -15,10 +12,14 @@ Subscription::Subscription(int id, string type, string subDate, string endDate, 
     remaining_rides = remainingRides;
     user_idd = userId;
     sub_idd = subId;
+    
 }
 
-int Subscription::stages(int numOfStations)
+
+
+int Subscription::stages()
 {
+   int numOfStations = subPlan.getNumStations();
     if (numOfStations >= 1 && numOfStations <= 9) {
         stageNumber = 1;
     }
@@ -34,12 +35,12 @@ int Subscription::stages(int numOfStations)
     return stageNumber;
 }
 
-void Subscription::printDetails(int type, int duration)
+void Subscription::printDetails()
 {
-    switch (type)
+    switch (subPlan.getType())
     {
     case 1:
-        switch (stages(1))
+        switch (stages())
         {
         case 1:
             cout << "you are on stage 1" << endl;
@@ -62,7 +63,7 @@ void Subscription::printDetails(int type, int duration)
         }
         break;
     case 2:
-        switch (duration)
+        switch (subPlan.getDuration())
         {
         case 1:
             switch (stageNumber)
@@ -119,5 +120,8 @@ void Subscription::printDetails(int type, int duration)
     }
 
 }
+
+
+
 
 

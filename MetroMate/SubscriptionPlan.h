@@ -17,6 +17,7 @@ private:
 
 	// constructor
 public:
+	SubscriptionPlan();
 	SubscriptionPlan(int type, int price, int duration, int numStations)
 		: type(type), price(price), duration(duration), numStations(numStations) {}
 
