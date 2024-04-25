@@ -15,5 +15,7 @@ public:
 	bool isStrongPassword(string password);
 	bool isTheCorrectPassword(User user,string password);
 	bool isValidEmailAddress(string& email);
+	bool UsedUserName(string username);
+	bool ExistingPassword(string password, string username);
 };
 

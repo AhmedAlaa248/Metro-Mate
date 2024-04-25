@@ -1,20 +1,35 @@
 #include "Validator.h"
-
+#include "User.h"
 Validator::Validator()
 {
 }
 
-/*bool Validator::notUsedUserName(string& userName, List users)
+bool Validator::UsedUserName(string username)
 {
-	for (int i = 0; i < users.size(); i++)
-	{
-		if (users[i].userName == userName)
-			return false;
-	}
+	vector<User> users = User::RetrieveUsersFromDatabase();
 
-	return true;
-	
-}*/
+	for (const auto& existingUser : users)
+	{
+		if (existingUser.userName == username)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool Validator::ExistingPassword(string password, string username)
+{
+	vector<User> users = User::RetrieveUsersFromDatabase();
+	for (const auto& existingUser : users)
+	{
+		if (existingUser.password == password && username == existingUser.userName)
+		{
+			return true;
+		}
+	}
+	return false;
+
+}
 
 bool Validator::isStrongPassword(string password)
 {
@@ -57,7 +72,6 @@ bool Validator::isTheCorrectPassword(User user,string password)
 	return correct;
 }
 
-
 /*The isValidEmail function takes a string email as input and uses a regular expression pattern to check if the email format is valid.
 The regular expression pattern ([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}) is used for basic email validation.
 It checks for one or more alphanumeric characters, dots, underscores, percentage signs, plus signs, 
@@ -73,3 +87,4 @@ bool Validator::isValidEmailAddress(string& email)
 	return regex_match(email, pattern);
 
 }
+

@@ -136,25 +136,12 @@ SubscriptionPlan::SubscriptionPlan()
 	}
 
 
-	void SubscriptionPlan::DisplayAllPlans() const{
-		vector<SubscriptionPlan> plans = {
-			SubscriptionPlan(1, 33, 3, 9),   // Student Card - Stage 1
-			SubscriptionPlan(1, 41, 3, 16),  // Student Card - Stage 2
-			SubscriptionPlan(1, 50, 3, 23),  // Student Card - Stage 3
-			SubscriptionPlan(1, 65, 3, 50),  // Student Card - Stage 4 (no limit)
-			SubscriptionPlan(2, 230, 1, 9),  // Public Card - 1 month - Stage 1
-			SubscriptionPlan(2, 290, 1, 16), // Public Card - 1 month - Stage 2
-			SubscriptionPlan(2, 340, 1, 23), // Public Card - 1 month - Stage 3
-			SubscriptionPlan(2, 450, 1, 50), // Public Card - 1 month - Stage 4 (no limit)
-			SubscriptionPlan(2, 1500, 12, 9),    // Public Card - 1 year - Stage 1
-			SubscriptionPlan(2, 2500, 12, 16),   // Public Card - 1 year - Stage 2
-			SubscriptionPlan(2, 3500, 12, 23),   // Public Card - 1 year - Stage 3
-			SubscriptionPlan(2, 4500, 12, 50),   // Public Card - 1 year - Stage 4 (no limit)
-			SubscriptionPlan(3, 0, 24, 50)   // Cash Wallet Card (no limit)
-		};
 
+	void SubscriptionPlan::DisplayAllPlans() const {
+		vector<SubscriptionPlan> subplans;
+		subplans = RetrieveSubplansFromDatabase();
 		cout << "Available Subscription Plans:\n";
-		for (const auto& plan : plans) {
+		for (const auto& plan : subplans) {
 			switch (plan.getType()) {
 			case 1:
 				cout << "Type: Student Card" << endl;
@@ -171,78 +158,75 @@ SubscriptionPlan::SubscriptionPlan()
 			}
 			cout << "Price: " << plan.getPrice() << " L.E" << endl;
 			cout << "Duration: " << plan.getDuration() << " Months" << endl;
-			cout << "Number of Stations: " << plan.getNumStations() << endl;
+
+			// Determine number of stations based on stages
+			int stages = plan.getstages();
+			int numStations;
+			if (stages == 1)
+				numStations = 9;
+			else if (stages == 2)
+				numStations = 16;
+			else if (stages == 3)
+				numStations = 23;
+			else
+				numStations = 50;
+
+			cout << "Number of Stations: " << numStations << endl;
+			cout << "Number of trips: " << plan.gettrips() << endl;
 			cout << endl;
+
 		}
 	}
-	void SubscriptionPlan::DisplayPlanInfo() const
-	{
-		cout << "Subscription Plan Information:\n";
-		cout << "-----------------------------\n";
-
-		cout << "Type: ";
-		switch (getType()) {
-		case 1:
-			cout << "Student Card";
-			break;
-		case 2:
-			cout << "Public Card";
-			break;
-		case 3:
-			cout << "Cash Wallet Card";
-			break;
-		default:
-			cout << "Invalid";
-		}
-		cout << "\nPrice: " << getPrice() << " LE" << endl;
-		cout << "Duration: " << getDuration() << " Months" << endl;
-		cout << "Number of Stations: " << getNumStations() << endl;
-		cout << endl;
-	}
 
 
-	// call back function to store the table's data in variables
-	static int callback(void* data, int argc, char** argv, char**)
-	{
-		vector<SubscriptionPlan>* subPlan = static_cast<vector<SubscriptionPlan>*>(data);
+	vector<SubscriptionPlan> SubscriptionPlan::RetrieveSubplansFromDatabase()
+{
+    vector<SubscriptionPlan> subplanList; 
+    sqlite3* db;
+    int rc = sqlite3_open("mydb.db", &db);
 
-		int plan_id = atoi(argv[0] ? argv[0] : "0");
-		string plan_name = argv[1] ? argv[1] : "";
-		int duration = atoi(argv[2] ? argv[2] : "0");
-		int price = atoi(argv[3] ? argv[3] : "0");
-		int trips = atoi(argv[4] ? argv[4] : "0");
-		int stages = atoi(argv[5] ? argv[5] : "0");
+    if (rc != SQLITE_OK)
+    {
+        // Error opening the database
+        cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subplanList;
+    }
+
+	//const char* sql = "SELECT [plan_id], [plan_name], duration, price, trips, stages FROM subplan";
+	const char* sql = "SELECT * FROM subplan";
+
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK)
+    {
+        cout << "Error preparing the SQL statement" << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subplanList;
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        int plan_id = sqlite3_column_int(stmt, 0);
+		const char* plan_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        int duration = sqlite3_column_int(stmt, 2);
+        int price = sqlite3_column_int(stmt, 3);
+        int trips = sqlite3_column_int(stmt, 4);
+        int stages = sqlite3_column_int(stmt, 5);
+		int type = sqlite3_column_int(stmt, 6);
 
 
-		
+        // Creating SubscriptionPlan objects and adding them to the vector
+        SubscriptionPlan plan(plan_id, plan_name, duration, price, trips, stages, type);
+        subplanList.push_back(plan);
+    }
 
-		subPlan->push_back(SubscriptionPlan{ plan_id, plan_name, duration, price, trips, stages });
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
 
-		return 0;
-	}
-	
-	//Load all data retrieved in Vector list of Subscriptions
-	static vector<SubscriptionPlan> loadAllSubplanFromDatabase(sqlite3* db)
-	{
-		vector<SubscriptionPlan> subPlan;
-
-
-		const char* sql = "SELECT * from subplan";
-
-		char* errMsg = nullptr;
-
-
-		int rc = sqlite3_exec(db, sql, callback, &subPlan, &errMsg);
-		if (rc != SQLITE_OK)
-		{
-			cerr << "SQL error: " << errMsg << endl;
-			sqlite3_free(errMsg);
-		}
-
-		return subPlan;
-
-	}
-
+    return subplanList;
+}
 
 	/*int main() {
 		sqlite3* db;
@@ -252,21 +236,17 @@ SubscriptionPlan::SubscriptionPlan()
 			cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
 			return 1;
 		}
-	//store the data from database into vector of Object subscription  
 
-		vector<SubscriptionPlan> subPlans = loadAllSubplanFromDatabase(db);
+		SubscriptionPlan subPlanss ;
+		vector<SubscriptionPlan> subPlans = subPlanss.RetrieveSubplansFromDatabase();
 
-		// Display the retrieved subscription plans
-		for (const auto& plan : subPlans)
-		{
-			cout << "Plan ID: " << plan.getplan_id() << ", Name: " << plan.getplan_name() << ", Duration: " << plan.getDuration() << ", Price: " << plan.getPrice() << ", Trips: " << plan.gettrips() << ", Stages: " << plan.getstages() << endl;
-		}
-
+		
+		subPlanss.DisplayAllPlans();
 		sqlite3_close(db);
 
 		return 0;
-	}
+	}*/
 
-*/
+
 
 

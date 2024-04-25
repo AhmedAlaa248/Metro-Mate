@@ -5,14 +5,14 @@
 using namespace std;
 class SubscriptionPlan {
 private:
-	int type = 1;
-	int price = 33;
-	int duration = 3;
-	int numStations = 9;
+	int type;
+	int price;
+	int duration;
+	int numStations;
 	string plan_name;
-	int trips=0;
-	int stages=1;
-	int plan_id=1;
+	int trips;
+	int stages;
+	int plan_id;
 
 
 	// constructor
@@ -21,8 +21,8 @@ public:
 	SubscriptionPlan(int type, int price, int duration, int numStations)
 		: type(type), price(price), duration(duration), numStations(numStations) {}
 
-	SubscriptionPlan(int plan_id, string plan_name, int duration,int price,int trips, int stages)
-		: plan_id(plan_id), plan_name(plan_name), duration(duration), price(price), trips(trips), stages(stages){}
+	SubscriptionPlan(int plan_id, string plan_name, int duration,int price,int trips, int stages, int type)
+		: plan_id(plan_id), plan_name(plan_name), duration(duration), price(price), trips(trips), stages(stages), type(type){}
 
 
     // Setters
@@ -51,6 +51,7 @@ public:
 	int calculateYearlyPublicFare(int stage) const;
 	int calculateCashWalletFare(int numStations) const;
 	void DisplayAllPlans() const;	
-	void DisplayPlanInfo() const;
+
+	static vector<SubscriptionPlan>RetrieveSubplansFromDatabase();
 
 };
