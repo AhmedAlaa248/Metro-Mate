@@ -7,7 +7,6 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
-
 #include "Station.h"
 
 using namespace std;
@@ -29,7 +28,7 @@ public:
 	
 	vector<vector<int>> findAllPaths(int source, int destination);
 	void showPaths(unordered_map<int, Station> stations, Station &sourceStation, Station& destinationStation);
-
+	vector<Ride> retrieveRides();
 	void addRide(unordered_map<int, Station> stations);
 };
 

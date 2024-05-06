@@ -1,4 +1,7 @@
 #include "Ride.h"
+#include "sqlite/sqlite3.h"
+#include "winsqlite/winsqlite3.h"
+#include "vector"
 
 Ride::Ride()
 {
@@ -96,5 +99,41 @@ void Ride::addRide(unordered_map<int, Station> stations)
 
 }
 
+vector <Ride> Ride::retrieveRides() {
+    vector<Ride> rides;
+    sqlite3* db;
+    int rc = sqlite3_open("mydb_1 (1).db", &db);
+
+    if (rc != SQLITE_OK) {
+        cerr << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return rides;
+    }
+
+    const char* sql = "SELECT * FROM Rides";
+
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return rides;
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const char* src = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        const char* dest = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        int station_id = sqlite3_column_int(stmt, 3);
+        Ride ride(id, string(src), string(dest), station_id);
+        rides.push_back(ride);
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return rides;
+
+}
 
 
