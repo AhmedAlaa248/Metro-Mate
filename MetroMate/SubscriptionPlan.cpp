@@ -6,6 +6,7 @@
 
 SubscriptionPlan::SubscriptionPlan()
 {
+
 }
 
 //setters
@@ -174,10 +175,10 @@ vector<SubscriptionPlan> SubscriptionPlan::RetrieveSubplansFromDatabase()
 		int trips = sqlite3_column_int(stmt, 4);
 		int stages = sqlite3_column_int(stmt, 5);
 		int type = sqlite3_column_int(stmt, 6);
+		int numofstations = sqlite3_column_int(stmt, 7);
+		
 
-
-		// Creating SubscriptionPlan objects and adding them to the vector
-		SubscriptionPlan plan(plan_id, plan_name, duration, price, trips, stages, type);
+		SubscriptionPlan plan(plan_id, plan_name, duration, price, trips, stages, type,numofstations);
 		subplanList.push_back(plan);
 	}
 

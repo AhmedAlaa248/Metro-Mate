@@ -22,8 +22,8 @@ public:
     SubscriptionPlan(int type, int price, int duration, int numStations)
         : type(type), price(price), duration(duration), numStations(numStations) {}
 
-    SubscriptionPlan(int plan_id, string plan_name, int duration, int price, int trips, int stages, int type)
-        : plan_id(plan_id), plan_name(plan_name), duration(duration), price(price), trips(trips), stages(stages), type(type) {}
+    SubscriptionPlan(int plan_id, string plan_name, int duration, int price, int trips, int stages, int type,int numStations)
+        : plan_id(plan_id), plan_name(plan_name), duration(duration), price(price), trips(trips), stages(stages), type(type),numStations(numStations) {}
 
 
     // Setters
