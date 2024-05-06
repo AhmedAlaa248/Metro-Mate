@@ -1,10 +1,8 @@
 #include "Subscription.h"
 
-Subscription::Subscription()
-{
-}
+Subscription::Subscription() {}
 
-Subscription::Subscription(int id, string type, string subDate, string endDate, int remainingRides, int userId, int subId) {
+Subscription::Subscription(int id, std::string type, std::string subDate, std::string endDate, int remainingRides, int userId, int subId) {
     ID = id;
     Type = type;
     Sub_datee = subDate;
@@ -12,14 +10,101 @@ Subscription::Subscription(int id, string type, string subDate, string endDate, 
     remaining_rides = remainingRides;
     user_idd = userId;
     sub_idd = subId;
-    
+}
+Subscription::Subscription(int id, std::string type, std::string subDate, std::string endDate, int remainingRides, int userId, int subId, string sourceStation, string finalStation) {
+    ID = id;
+    Type = type;
+    Sub_datee = subDate;
+    End_datee = endDate;
+    remaining_rides = remainingRides;
+    user_idd = userId;
+    sub_idd = subId;
+    source_station = sourceStation; // Assign the value to the new attribute
+    final_station = finalStation; // Assign the value to the new attribute
+}
+void Subscription::saveSubscriptionToDatabase() {
+    sqlite3* db;
+    char* errorMessage = nullptr;
+
+    // Open the database
+    int rc = sqlite3_open("mydb_1 (1).db", &db);
+    if (rc) {
+        cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    // SQL statement to insert subscription data
+    string sql = "INSERT INTO Subscription (Type, Sub_date, End_date, remaining_rides, user_idd, sub_idd, [SourceStation ], FinalStation) "
+        "VALUES ('" + Type + "', '" + Sub_datee + "', '" + End_datee + "', " + to_string(remaining_rides) + ", " + to_string(user_idd) + ", " + to_string(sub_idd) + ", '" + source_station + "', '" + final_station + "')";
+
+    // Execute the SQL statement
+    rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errorMessage);
+    if (rc != SQLITE_OK) {
+        cerr << "SQL error: " << errorMessage << endl;
+        sqlite3_free(errorMessage);
+    }
+    else {
+        cout << "Subscription data saved to the database." << endl;
+    }
+
+    // Close the database
+    sqlite3_close(db);
 }
 
+vector<Subscription> Subscription::Subscriptions()
+{
+    vector<Subscription> subscriptionList;
+    sqlite3* db;
+    int rc = sqlite3_open("mydb_1 (1).db", &db);
+
+    if (rc != SQLITE_OK)
+    {
+        // Error opening the database
+        cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subscriptionList;
+    }
+
+    const char* sql = "SELECT * FROM subscription";
+
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK)
+    {
+        cout << "Error preparing the SQL statement" << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subscriptionList;
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        int ID = sqlite3_column_int(stmt, 0);
+        const char* Type = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        const char* Sub_datee = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        const char* End_datee = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        int remaining_rides = sqlite3_column_int(stmt, 4);
+        int user_idd = sqlite3_column_int(stmt, 5);
+        int sub_idd = sqlite3_column_int(stmt, 6);
+        const char* source_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7)); // Assuming source station is at column 7
+        const char* final_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)); // Assuming final station is at column 8
+
+        // Creating Subscription objects and adding them to the vector
+        Subscription subscription(ID, Type, Sub_datee, End_datee, remaining_rides, user_idd, sub_idd, string(source_station), string(final_station));
+        subscriptionList.push_back(subscription);
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return subscriptionList;
+}
 
 
 int Subscription::stages()
 {
-   int numOfStations = subPlan.getNumStations();
+    int numOfStations = subPlan.getNumStations();
     if (numOfStations >= 1 && numOfStations <= 9) {
         stageNumber = 1;
     }
@@ -120,8 +205,3 @@ void Subscription::printDetails()
     }
 
 }
-
-
-
-
-

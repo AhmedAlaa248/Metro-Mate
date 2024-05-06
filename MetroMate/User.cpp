@@ -1,5 +1,10 @@
 #include "User.h"
 #include "Validator.h"
+#include "map"
+#include "set"
+#include <iomanip>
+#include <chrono>
+#include <sstream>
 User::User() {
 	id = 0; // Initialize id to 0
 	balance = 0; // Initialize balance to 0
@@ -140,7 +145,146 @@ vector<User> User::RetrieveUsersFromDatabase()
 
 	return userList;
 }
+Subscription User::purchaseSub(vector <Subscription>& z, User& oo) {
+	vector<SubscriptionPlan> plans = SubscriptionPlan::RetrieveSubplansFromDatabase();
+	cout << "--------------------Available programs--------------------" << endl;
+	int count = 1;
+	map<int, string> planTypeMap;
+	set<int> uniqueTypes;
 
+	for (const auto& plan : plans) {
+		if (uniqueTypes.find(plan.getType()) == uniqueTypes.end()) {
+			count++; cout << "- " << plan.getType() << "- " << plan.getplan_name() << endl;
+			planTypeMap[count - 1] = plan.getplan_name();
+			uniqueTypes.insert(plan.getType());
+		}
+	}
+
+	int selectedType;
+	bool validInput = false;
+	while (!validInput) {
+		cout << "Please Select Number of Desired Program Type: ";
+		cin >> selectedType;
+
+		if (uniqueTypes.find(selectedType) != uniqueTypes.end()) {
+			validInput = true;
+		}
+		else {
+			cout << "Invalid input. Please enter a valid program type number." << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
+
+
+	cout << "--------------------Stages for Selected Program Type " << selectedType << "--------------------" << endl;
+	for (const auto& plan : plans) {
+		if (plan.getType() == selectedType) {
+			cout << "Plan ID :  " << plan.getplan_id() << endl;
+			cout << "Plan Name: " << plan.getplan_name() << endl;
+			cout << "Stage: " << plan.getstages() << endl;
+			cout << "Price: " << plan.getPrice() << endl;
+			cout << "Duration: " << plan.getDuration() << " Months" << endl;
+			cout << "Number of Stations: " << plan.getNumStations() << endl;
+			cout << "--------------------------------------------" << endl;
+		}
+	}
+
+	int planId;
+	string typee;
+	int durationn, remainingrides;
+	bool validId = false;
+	while (!validId) {
+		cout << "Please Choose ID Of Desired Plan: ";
+		cin >> planId;
+
+		for (const auto& plan : plans) {
+			if (plan.getplan_id() == planId && plan.getType() == selectedType) {
+				validId = true;
+				typee = plan.getplan_name();
+				durationn = plan.getDuration();
+				remainingrides = plan.gettrips();
+				break;
+			}
+		}
+
+		if (!validId) {
+			cout << "Invalid input. Please enter a valid plan ID for the selected program type." << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
+	time_t currentTime = time(nullptr);
+	tm currentDate;
+	localtime_s(&currentDate, &currentTime);
+
+
+	stringstream currentDateString;
+	currentDateString << (currentDate.tm_year + 1900) << "/" << (currentDate.tm_mon + 1) << "/" << currentDate.tm_mday;
+	string currentDateStr = currentDateString.str();
+
+	//	cout << "Current Date: " << currentDateStr << endl;
+
+
+	tm newDate = addDaysToDate(currentDate, durationn * 30);
+
+
+	stringstream newDateString;
+	newDateString << (newDate.tm_year + 1900) << "/" << (newDate.tm_mon + 1) << "/" << newDate.tm_mday;
+	string newDateStr = newDateString.str();
+
+	//	cout << "New Date after adding 8 days: " << newDateStr << endl;
+			//int id, std::string type, std::string subDate, std::string endDate
+			// , int remainingRides, int userId, int subId, string sourceStation, string finalStation
+	int idp = z.size() + 1;
+	Subscription  ebla3(idp, typee, currentDateStr, newDateStr, remainingrides, oo.id, planId, "avva", "sas");
+	z.push_back(ebla3);
+	oo.subId = idp;
+	oo.subscription = ebla3;
+	return ebla3;
+};
+tm User::addDaysToDate(const tm& date, int daysToAdd) {
+	// Convert the input date to a time_t
+	time_t time = mktime(const_cast<tm*>(&date));
+
+	// Add the specified number of seconds (seconds in a day * daysToAdd)
+	time += (daysToAdd * 24 * 60 * 60);
+
+	// Convert the updated time back to a tm structure
+	tm newDate;
+	localtime_s(&newDate, &time);
+
+	return newDate;
+}
+void User::renewSub(int subscid, vector <Subscription>& z, User& o) {
+	cout << "Your Current plan details will be loaded ! \n";
+	for (auto& w : z) {
+		if (subscid == w.ID) {
+			cout << "Subscription ID: " << w.ID << endl;
+			cout << "Subscription Type: " << w.Type << endl;
+			cout << "Subscription Start Date: " << w.Sub_datee << endl;
+			cout << "Subscription End Date: " << w.End_datee << endl;
+			cout << "Remaining Rides: " << w.remaining_rides << endl;
+		}
+	}
+
+	int num;
+	bool validInput = false;
+	while (!validInput) {
+		cout << "Press 1 to Renew your Subscription plan ! ";
+		cin >> num;
+		if (cin.fail() || num != 1) {
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Invalid input. Please enter 1 to renew your subscription plan." << endl;
+		}
+		else {
+			validInput = true;
+		}
+	}
+
+
+}
 string User::Login(vector<User> users) {
 	Validator validator;
 
@@ -251,16 +395,24 @@ void User::updateInfo(vector<User>& users) {
 	
 }
 
-//int main() {
-//	User user;
-//	vector<User> users = User::RetrieveUsersFromDatabase();
-//	user.updateInfo(users);
-//
-//	cout << "Updated List of Users:\n";
-//	for (const auto& u : users) {
-//		cout << "Name: " << u.name << ", Username: " << u.userName << ", Email: " << u.email << endl;
-//	}
-//
-//	return 0;
-//}
+int main() {
+	User o;
+	o.id = 1;
+	SubscriptionPlan v;
+	Subscription z;
+	vector <Subscription> q = z.Subscriptions();
+	vector <Subscription> wqw = z.Subscriptions();
+	z = o.purchaseSub(wqw, o);
+	for (auto& w : wqw) {
+		cout << "Subscription ID: " << w.ID << endl;
+		cout << "Subscription Type: " << w.Type << endl;
+		cout << "Subscription Start Date: " << w.Sub_datee << endl;
+		cout << "Subscription End Date: " << w.End_datee << endl;
+		cout << "Remaining Rides: " << w.remaining_rides << endl;
+		cout << "User ID: " << w.user_idd << endl;
+		cout << "Subscription Plan ID: " << w.sub_idd << endl;
+		cout << "Source Station: " << w.source_station << endl;
+		cout << "Final Station: " << w.final_station << endl;
+	}
+}
 

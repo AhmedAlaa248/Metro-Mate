@@ -22,7 +22,7 @@ public:
 
 
 	User();
-	User( int id,string name,string email,string password,int balance,int subId,int rideId,string userName):id(id),name(name),email(email), password(password), balance(balance), subId(subId),rideId(rideId),userName(userName){}
+	User(int id, string name, string email, string password, int balance, int subId, int rideId, string userName) :id(id), name(name), email(email), password(password), balance(balance), subId(subId), rideId(rideId), userName(userName) {}
 	User(int userId, int userBalance, const std::string& userName, const std::string& userPassword, const std::string& userEmail)
 		: id(userId), balance(userBalance), name(""), userName(userName), password(userPassword), email(userEmail)
 	{
@@ -35,7 +35,9 @@ public:
 	string Login(vector<User> users);		// return the username
 	void updateInfo(vector<User>& users);
 
-	void purchaseSub(int subType, int stage);
+	Subscription purchaseSub(vector <Subscription>&, User&);
+	void renewSub(int, vector <Subscription>&, User&);
+	tm addDaysToDate(const tm& date, int daysToAdd);
 	void renewSub();   
 	void changeSub();
 	void checkIn(Station source, Station destination);
