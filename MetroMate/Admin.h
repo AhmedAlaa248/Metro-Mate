@@ -15,7 +15,7 @@ public:
 
     // User management
     void viewUser( vector<User>& users);
-    void deleteUser( vector<User>& users);
+    void deleteUser( vector<User>& users, bool& infoUpdated);
     void viewAllUsers(vector<User>& users);
     void editUser(vector<User>& users);
 

@@ -76,8 +76,6 @@ string SubscriptionPlan::getplan_name() const
 
 
 
-// calculate the fare for each subscription
-
 int SubscriptionPlan::calcFare(int subscriptionType, int num_station) {
 	int fare = 0;
 	switch (subscriptionType) {
@@ -138,7 +136,6 @@ int SubscriptionPlan::calculateCashWalletFare(int numStations) const {
 	else
 		return 15 * numStations;
 }
-
 vector<SubscriptionPlan> SubscriptionPlan::RetrieveSubplansFromDatabase()
 {
 	vector<SubscriptionPlan> subplanList;
@@ -187,7 +184,6 @@ vector<SubscriptionPlan> SubscriptionPlan::RetrieveSubplansFromDatabase()
 
 	return subplanList;
 }
-
 void SubscriptionPlan::DisplayAllPlans() const {
 	vector<SubscriptionPlan> subplans;
 	subplans = RetrieveSubplansFromDatabase();

@@ -15,7 +15,7 @@ User::User() {
 	email = "";
 }
 
-void User::Register(vector<User>& users)
+void User::Register(vector<User>& users, bool& infoUpdated)
 {
 	User user;
 	Validator validator;
@@ -91,60 +91,111 @@ void User::Register(vector<User>& users)
 
 	cout << "Account created successfully.\n\n";
 	users.push_back(user);
-
-
-}
-
-vector<User> User::RetrieveUsersFromDatabase()
-{
-	vector <User> userList;
-	sqlite3* db;
-	int rc = sqlite3_open("mydb.db", &db);
-
-	if (rc != SQLITE_OK)
-	{
-		// Error opening the database
-		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db); 
-		return userList;   
-	}
-
-
-	const char* sql = "Select ID,Name,Email,Password,Balance,[Subscription-idd],[rides_idd],[User_Name] FROM User";
-	//const char* sql = "Select ID From User";
-
-	sqlite3_stmt* stmt;
-	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-	if (rc != SQLITE_OK)
-	{
-		cout << "Error preparing the SQL statement" << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db);
-		return userList;
-		cout << "SQL Query: " << sql << endl;
-
-
-	}
-
-	while (sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		int id = sqlite3_column_int(stmt, 0);
-		const char* name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-		const char* email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-		const char* password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-		int balance = sqlite3_column_int(stmt, 4);
-		int subId = sqlite3_column_int(stmt, 5);
-		int rideId = sqlite3_column_int(stmt, 6);
-		const char* userName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
+	infoUpdated = true;
 	
-		userList.push_back(User(id, name, email,password, balance, subId,rideId,userName));
-		//userList.push_back(User(id));
-	}
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
-
-	return userList;
 }
+
+void User::updateInfo(vector<User>& users, bool& infoUpdated) {
+	
+	bool goodPassword = false;
+	int choice;
+	string signedInUsername = Login(users);
+	Validator validator;
+
+	int signedInUserIndex = -1;
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (users[i].userName == signedInUsername) {
+			signedInUserIndex = i;
+			break;
+		}
+	}
+	
+		cout << "Choose what you want to change:\n"
+			<< "1. Change Name\n"
+			<< "2. Change Email\n"
+			<< "3. Change Password\n"
+			<< "4. Change Username\n"
+			<< "Enter your choice: ";
+		cin >> choice;
+		cin.ignore();
+
+		switch (choice) {
+		case 1: {
+			cout << "Enter new name: ";
+			getline(cin, users[signedInUserIndex].name);
+			infoUpdated = true;
+			break;
+		}
+		case 2: {
+			while (true)
+			{
+				cout << "Enter your new email:\n";
+				cin >> users[signedInUserIndex].email;
+
+				if (validator.isValidEmailAddress(users[signedInUserIndex].email))
+				{
+					infoUpdated = true;
+					break;
+				}
+				else
+				{
+					cout << "Invalid email, please try again\n";
+				}
+			}
+			break;
+		}
+		case 3: {
+			while (true)
+			{
+				cout << "Enter your new password:\n";
+				cin >> users[signedInUserIndex].password;
+
+				cout << "Confirm your password:\n";
+				string confirmPassword;
+				cin >> confirmPassword;
+
+				if (users[signedInUserIndex].password != confirmPassword)
+				{
+					cout << "Passwords do not match!\n";
+					continue;
+				}
+
+				if (!validator.isStrongPassword(users[signedInUserIndex].password))
+				{
+					cout << "Password is weak. Please choose a stronger one.\n";
+					continue;
+				}
+
+				goodPassword = true;
+				infoUpdated = true;
+				break;
+			}
+			break;
+		}
+		case 4: {
+			string newUsername;
+			while (true)
+			{
+				cout << "Enter your user name:\n";
+				getline(cin, users[signedInUserIndex].userName);
+
+				if (!validator.UsedUserName(users[signedInUserIndex].userName))
+				{
+					infoUpdated = true;
+					break;
+				}
+				else
+				{
+					cout << "Already taken username, please try again\n";
+				}
+			}
+		}
+		default:
+			break;
+		}
+		
+}
+
 Subscription User::purchaseSub(vector <Subscription>& z, User& oo) {
 	vector<SubscriptionPlan> plans = SubscriptionPlan::RetrieveSubplansFromDatabase();
 	cout << "--------------------Available programs--------------------" << endl;
@@ -243,6 +294,7 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& oo) {
 	oo.subscription = ebla3;
 	return ebla3;
 };
+
 tm User::addDaysToDate(const tm& date, int daysToAdd) {
 	// Convert the input date to a time_t
 	time_t time = mktime(const_cast<tm*>(&date));
@@ -256,6 +308,7 @@ tm User::addDaysToDate(const tm& date, int daysToAdd) {
 
 	return newDate;
 }
+
 void User::renewSub(int subscid, vector <Subscription>& z, User& o) {
 	cout << "Your Current plan details will be loaded ! \n";
 	for (auto& w : z) {
@@ -285,6 +338,7 @@ void User::renewSub(int subscid, vector <Subscription>& z, User& o) {
 
 
 }
+
 string User::Login(vector<User> users) {
 	Validator validator;
 
@@ -329,90 +383,130 @@ string User::Login(vector<User> users) {
 	return userName;
 }
 
-void User::updateInfo(vector<User>& users) {
-	int choice;
-	string signedInUsername = Login(users);
-	Validator validator;
+void User::saveUsersToDatabase(vector<User>& users, bool calledFromRegister) {
+	sqlite3* db;
+	int rc = sqlite3_open("mydb_1 (1).db", &db);
 
-	int signedInUserIndex = -1;
-	for (size_t i = 0; i < users.size(); ++i) {
-		if (users[i].userName == signedInUsername) {
-			signedInUserIndex = i;
-			break;
+	if (rc != SQLITE_OK) {
+		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return;
+	}
+
+	const char* sql;
+	if (calledFromRegister) {
+		// SQL query to insert a new record
+		sql = "INSERT INTO User (Name, Email, Password, Balance, [Subscription-idd], [rides_idd], [User_Name]) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	}
+	else {
+		// SQL query to update an existing record
+		sql = "UPDATE User SET Name=?, Email=?, Password=?, Balance=?, [Subscription-idd]=?, [rides_idd]=?, [User_Name]=? WHERE ID=?";
+	}
+
+	for (const auto& user : users) {
+		sqlite3_stmt* stmt;
+		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+		if (rc != SQLITE_OK) {
+			cout << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << endl;
+			sqlite3_close(db);
+			return;
 		}
+
+		// Bind parameters to the prepared statement
+		sqlite3_bind_text(stmt, 1, user.name.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, user.email.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 3, user.password.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_int(stmt, 4, user.balance);
+		sqlite3_bind_int(stmt, 5, user.subId);
+		sqlite3_bind_int(stmt, 6, user.rideId);
+		sqlite3_bind_text(stmt, 7, user.userName.c_str(), -1, SQLITE_STATIC);
+			if (!calledFromRegister) {
+				sqlite3_bind_int(stmt, 8, user.id);
+			}
+
+		// Execute the SQL statement
+		rc = sqlite3_step(stmt);
+
+		if (rc != SQLITE_DONE) {
+			cout << "Error executing the SQL statement: " << sqlite3_errmsg(db) << endl;
+		}
+
+		// Finalize the statement
+		sqlite3_finalize(stmt);
+	}
+
+	sqlite3_close(db);
+}
+
+vector<User> User::RetrieveUsersFromDatabase()
+{
+	vector <User> userList;
+	sqlite3* db;
+	int rc = sqlite3_open("mydb_1 (1).db", &db);
+
+	if (rc != SQLITE_OK)
+	{
+		// Error opening the database
+		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db); 
+		return userList;   
 	}
 
 
-	
-		cout << "Choose what you want to change:\n"
-			<< "1. Change Name\n"
-			<< "2. Change Email\n"
-			<< "3. Change Password\n"
-			<< "4. Change Username\n"
-			<< "Enter your choice: ";
-		cin >> choice;
-		cin.ignore();
+	const char* sql = "Select ID,Name,Email,Password,Balance,[Subscription-idd],[rides_idd],[User_Name] FROM User";
+	//const char* sql = "Select ID From User";
 
-		switch (choice) {
-		case 1: {
-			cout << "Enter new name: ";
-			getline(cin, users[signedInUserIndex].name);
-			break;
-		}
-		case 2: {
-			cout << "Enter new email: ";
-			getline(cin, users[signedInUserIndex].email);
-			break;
-		}
-		case 3: {
-			cout << "Enter new password: ";
-			getline(cin, users[signedInUserIndex].password);
-			break;
-		}
-		case 4: {
-			string newUsername;
-			/*cout << "Enter new username: ";
-			getline(cin, users[signedInUserIndex].userName);
-			break;*/
-			while (true)
-			{
-				cout << "Enter your user name:\n";
-				getline(cin, users[signedInUserIndex].userName);
+	sqlite3_stmt* stmt;
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
-				if (!validator.UsedUserName(users[signedInUserIndex].userName))
-				{
-					break;
-				}
-				else
-				{
-					cout << "Already taken username, please try again\n";
-				}
-			}
-		}
-		default:
-			break;
-		}
+	if (rc != SQLITE_OK)
+	{
+		cout << "Error preparing the SQL statement" << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return userList;
+		cout << "SQL Query: " << sql << endl;
+
+
+	}
+
+	while (sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		int id = sqlite3_column_int(stmt, 0);
+		const char* name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		const char* email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+		const char* password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+		int balance = sqlite3_column_int(stmt, 4);
+		int subId = sqlite3_column_int(stmt, 5);
+		int rideId = sqlite3_column_int(stmt, 6);
+		const char* userName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
 	
+		userList.push_back(User(id, name, email,password, balance, subId,rideId,userName));
+		//userList.push_back(User(id));
+	}
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	return userList;
 }
 
 int main() {
-	User o;
-	o.id = 1;
-	SubscriptionPlan v;
-	Subscription z;
-	vector <Subscription> q = z.Subscriptions();
-	vector <Subscription> wqw = z.Subscriptions();
-	z = o.purchaseSub(wqw, o);
-	for (auto& w : wqw) {
-		cout << "Subscription ID: " << w.ID << endl;
-		cout << "Subscription Type: " << w.Type << endl;
-		cout << "Subscription Start Date: " << w.Sub_datee << endl;
-		cout << "Subscription End Date: " << w.End_datee << endl;
-		cout << "Remaining Rides: " << w.remaining_rides << endl;
-		cout << "User ID: " << w.user_idd << endl;
-		cout << "Subscription Plan ID: " << w.sub_idd << endl;
-		cout << "Source Station: " << w.source_station << endl;
-		cout << "Final Station: " << w.final_station << endl;
-	}
+	User user;
+	vector<User> users = user.RetrieveUsersFromDatabase();
+	bool updated = false;
+	user.Register(users, updated);
+	user.saveUsersToDatabase(users, true);
+	/*vector<User> newusers = user.RetrieveUsersFromDatabase();*/
+	/*for (const auto& usr : users) {
+		cout << "ID: " << usr.id << endl;
+		cout << "Name: " << usr.name << endl;
+		cout << "Email: " << usr.email << endl;
+		cout << "Password: " << usr.password << endl;
+		cout << "Balance: " << usr.balance << endl;
+		cout << "Subscription ID: " << usr.subId << endl;
+		cout << "Ride ID: " << usr.rideId << endl;
+		cout << "User Name: " << usr.userName << endl;
+		cout << "---------------------" << endl;*/
+	
 }
 

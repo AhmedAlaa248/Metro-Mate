@@ -211,10 +211,10 @@ void Station::printDetails() {
 	cout << "Number of Subscriptions: " << numOfSubscriptions << endl;
 	cout << endl;
 }
-int main() {
-	Station w;
-	vector <Station> q = w.RetrieveStationsFromDatabase();
-	for (auto z : q) {
-		z.printDetails();
-	}
-}
+//int main() {
+//	Station w;
+//	vector <Station> q = w.RetrieveStationsFromDatabase();
+//	for (auto z : q) {
+//		z.printDetails();
+//	}
+//}

@@ -36,8 +36,9 @@ void Admin::viewUser( vector<User>& users)
     }
 
 }
-void Admin::deleteUser( vector<User>& users)
+void Admin::deleteUser( vector<User>& users, bool& infoUpdated)
 {
+    Admin::viewAllUsers(users);
     bool userfound = false;
     while (!userfound)
     {
@@ -50,6 +51,7 @@ void Admin::deleteUser( vector<User>& users)
             if (it->id == userID) {
                 users.erase(it);
                 cout << "User deleted successfully." << endl;
+                infoUpdated = true;
                 userfound = true;
                 break;
             }
@@ -74,7 +76,6 @@ void Admin::viewAllUsers( vector<User>& users)
         cout << "Ride ID: " << user.rideId << endl;
     }
 }
-
 void Admin::editUser(vector<User>& users) {
     int userID;
     bool userFound = false;
@@ -115,16 +116,16 @@ void Admin::editUser(vector<User>& users) {
         }
     }
 }
-int main() {
-    vector<User> users= User::RetrieveUsersFromDatabase();
-    Admin admin;
-
-    // Test deleteUser function
-    admin.viewAllUsers(users);
-    cout << "Before deleting a user:" << endl;
-    admin.editUser(users);
-    cout << "After editing a user:" << endl;
-    admin.viewAllUsers(users);
-
-    return 0;
-}
+//int main() {
+//    vector<User> users= User::RetrieveUsersFromDatabase();
+//    Admin admin;
+//
+//    // Test deleteUser function
+//    admin.viewAllUsers(users);
+//    cout << "Before deleting a user:" << endl;
+//    admin.editUser(users);
+//    cout << "After editing a user:" << endl;
+//    admin.viewAllUsers(users);
+//
+//    return 0;
+//}
