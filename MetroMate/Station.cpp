@@ -10,12 +10,13 @@ Station::Station()
 Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link) {
 	id = idd;
 	name = namee;
+	lineNum = line;
 	totalIncome = inc;
 	numOfSoldTickets = tix;
 	numOfPassengers = passengers;
-	lineNum = line;
 	numOfSubscriptions = subscriptions;
-
+	
+	nextId++;
 	string n = "";
 
 	for (int i = 0; i < link.size(); i++)
@@ -34,7 +35,7 @@ Station::Station(string n, int line)
 {
 	id = nextId++;
 	name = n;
-	lineNum = line;
+	lineNum = to_string(line);
 	totalIncome = 0;
 	numOfSoldTickets = 0;
 	numOfSubscriptions = 0;
@@ -70,6 +71,10 @@ pair<bool, Station> Station::findStationByName(string name)
 			return pair<bool, Station>(found, (*it).second);
 		}
 	}
+
+	if (!found)
+		cout << "There is no station named " + name + " in our databse.\n";
+	
 	return pair<bool, Station>(found, station);
 }
 
@@ -208,9 +213,10 @@ void Station::displayDetails(string type)
 
 	if (type == "admin")
 	{
-		cout << "\ttotal income: " + this->totalIncome;
+		cout << "total income: " + this->totalIncome;
 		cout << "\nnumber of sold tickets: " + this->numOfSoldTickets;
 		cout << "\tnumber of subscriptions: " + this->numOfSubscriptions;
 		cout << "\tnumber of passengers: " + this->numOfPassengers << endl;
 	}
+	cout << endl;
 }

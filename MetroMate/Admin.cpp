@@ -1,6 +1,8 @@
 #include "Admin.h"
 #include<iostream>
 #include"sqlite/sqlite3.h"
+#include "GlobalData.h"
+
 using namespace std;
 
 Admin::Admin()
@@ -117,7 +119,7 @@ void Admin::editUser(vector<User>& users) {
     }
 }
 
-void Admin::addStation(Station station)
+void Admin::addStation()
 {
     Station::addStation();
 }
@@ -125,6 +127,29 @@ void Admin::addStation(Station station)
 void Admin::deleteStation()
 {
     Station::removeStation();
+}
+void Admin::viewAllStations()
+{
+    for (auto it = GlobalData::stations.begin(); it != GlobalData::stations.end(); it++) {
+        if (it->second.getName() == "")
+        {
+            GlobalData::stations.erase(it->second.getID());
+            continue;
+        }
+
+        it->second.displayDetails("admin");
+
+    }
+}
+void Admin::viewStationDetails()
+{
+    cout << "Enter station name:\n";
+    string name;
+    cin >> name;
+    pair<bool, Station> response = Station::findStationByName(name);
+    if (response.first)
+        response.second.displayDetails("admin");
+    
 }
 //int main() {
 //    vector<User> users= User::RetrieveUsersFromDatabase();

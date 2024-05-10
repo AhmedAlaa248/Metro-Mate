@@ -21,10 +21,10 @@ public:
     void editUser(vector<User>& users);
 
     // Station management
-    void addStation(Station station);
+    void addStation();
     void deleteStation();
     //void editStation(int stationID, Station updatedStation);
-    //void viewAllStations();
-    //void viewStationDetails(int stationID);
+    void viewAllStations();
+    void viewStationDetails();
 
 };

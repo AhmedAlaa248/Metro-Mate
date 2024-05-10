@@ -1,4 +1,5 @@
 ﻿#include "Menu.h"
+#include"Admin.h"
 
 Menu::Menu(){
 }
@@ -78,6 +79,8 @@ void Menu::signUp()
 
 int Menu::adminMenu()
 {
+	Admin admin;
+
 	int choice;
 	cout << "Hello boss!\n";
 	cout << "1. Manage users\n2. Manage stations\n3. Manage subscriptions\n4. Manage rides\n5. Mange fare\n0. Log out\n";
@@ -125,6 +128,7 @@ int Menu::adminMenu()
 		case 1:
 			//TODO call add station FN.
 			cout << "Add Station";
+			admin.addStation();
 			break;
 		case 2:
 			//TODO call edit station FN.
@@ -133,13 +137,16 @@ int Menu::adminMenu()
 		case 3:
 			//TODO call delete station FN.
 			cout << "Delete station";
+			admin.deleteStation();
 			break;
 		case 4:
 			//TODO call view station details FN.
+			admin.viewStationDetails();
 			cout << "View station";
 			break;
 		case 5:
 			//TODO call view all station FN.
+			admin.viewAllStations();
 			cout << "All stations";
 			break;
 		default:

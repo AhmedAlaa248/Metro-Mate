@@ -15,10 +15,10 @@ class Station
 
 public:
 	static int nextId;	//auto increament
-	long totalIncome; //increased when add subscription
-	long numOfSoldTickets;
-	long numOfSubscriptions; //increased when add subscription
-	long long numOfPassengers;
+	int totalIncome; //increased when add subscription
+	int numOfSoldTickets;
+	int numOfSubscriptions; //increased when add subscription
+	int numOfPassengers;
 
 	unordered_set<int> connections;
 
