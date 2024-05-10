@@ -1,6 +1,6 @@
-﻿  Ride.cpp
-  Source.cpp
-D:\FCIS ASU\Second year\Fourth term\Metro-Mate\MetroMate\Source.cpp(7,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Validator.cpp
-  Generating Code...
+﻿  User.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\include\optional(12): warning STL4038: The contents of <optional> are available only with C++17 or later.
+D:\FCIS ASU\Second year\Fourth term\Metro-Mate\MetroMate\User.cpp(24,34): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\FCIS ASU\Second year\Fourth term\Metro-Mate\MetroMate\User.cpp(108,25): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\FCIS ASU\Second year\Fourth term\Metro-Mate\MetroMate\User.cpp(290,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   MetroMate.vcxproj -> D:\FCIS ASU\Second year\Fourth term\Metro-Mate\MetroMate\x64\Debug\MetroMate.exe

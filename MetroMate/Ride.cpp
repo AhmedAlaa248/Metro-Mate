@@ -1,7 +1,7 @@
 #include "Ride.h"
-#include "sqlite/sqlite3.h"
-#include "winsqlite/winsqlite3.h"
-#include "vector"
+
+#define adjacencyList GlobalData::adjacencyList
+#define map GlobalData::stations
 
 Ride::Ride()
 {
@@ -18,23 +18,23 @@ Ride::Ride(int rideId, string src, string dest, int station_id)
 
 void Ride::dfs(int source, int destination, vector<int>& path, vector<bool>& visited)
 {
-        visited[source] = true;
-        path.push_back(source);
+    visited[source] = true;
+    path.push_back(source);
 
-        if (source == destination) {
-            allPaths.push_back(path);
-        }
-        else {
-            for (int neighbor : adjacencyList[source]) {
-                if (!visited[neighbor]) {
-                    dfs(neighbor, destination, path, visited);
-                }
+    if (source == destination) {
+        allPaths.push_back(path);
+    }
+    else {
+        for (int neighbor : adjacencyList[source]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, destination, path, visited);
             }
         }
-
-        visited[source] = false;
-        path.pop_back();
     }
+
+    visited[source] = false;
+    path.pop_back();
+}
 
 vector<vector<int>> Ride::findAllPaths(int source, int destination)
 {
@@ -50,25 +50,25 @@ vector<vector<int>> Ride::findAllPaths(int source, int destination)
     return allPaths;
 }
 
-void Ride::showPaths(unordered_map<int, Station> stations, Station& sourceStation, Station& destinationStation)
+void Ride::showPaths(Station& sourceStation, Station& destinationStation)
 {
-    findAllPaths(sourceStation.getID(),destinationStation.getID());
+    findAllPaths(sourceStation.getID(), destinationStation.getID());
 
     if (!allPaths.empty()) {
         cout << "Shortest path between stations " << sourceStation.getName() << " and " << destinationStation.getName() << ":" << endl;
         for (int s : allPaths.front()) {
-            if (stations.find(s) != stations.end())
-                cout << stations[s].getName() << " ";
-            
+            if (map.find(s) != map.end())
+                cout << map[s].getName() << " -> ";
+
         }
         cout << endl;
 
         cout << "All paths between stations " << sourceStation.getName() << " and " << destinationStation.getName() << ":" << endl;
-        for (size_t i = 0; i < allPaths.size(); ++i) {
+        for (int i = 0; i < allPaths.size(); ++i) {
             cout << "Path " << i + 1 << ": ";
             for (int s : allPaths[i]) {
-                if (stations.find(s) != stations.end())
-                    cout << stations[s].getName() << " ";
+                if (map.find(s) != map.end())
+                    cout << map[s].getName() << " -> ";
             }
             cout << endl;
         }
@@ -78,28 +78,36 @@ void Ride::showPaths(unordered_map<int, Station> stations, Station& sourceStatio
     }
 }
 
-void Ride::addRide(unordered_map<int, Station> stations)
+void Ride::startTheAdjacency()
+{
+    for (auto it = map.begin(); it != map.end(); it++)
+    {
+        adjacencyList[it->first] = it->second.connections;
+    }
+}
+
+void Ride::addRide()
 {
     cout << "Enter pick up station: ";
     cin >> source;
     cout << "Enter destination station: ";
     cin >> destination;
 
-    pair <int, Station> srcResponse = Station::findStationByName(source, stations);
-    pair <int, Station> destResponse = Station::findStationByName(destination, stations);
+    pair <int, Station> srcResponse = Station::findStationByName(source);
+    pair <int, Station> destResponse = Station::findStationByName(destination);
+
 
     if (srcResponse.first && destResponse.first)
-        showPaths(stations, srcResponse.second, destResponse.second);
+        showPaths(srcResponse.second, destResponse.second);
     else if (!srcResponse.first)
         cout << "There is no station named " + source + " in our databse.";
     else if (!destResponse.first)
         cout << "There is no station named " + destination + " in our databse.";
     else
         cout << "There is no station named " + source + " or " + destination + " in our databse.";
-
 }
 
-vector <Ride> Ride::retrieveRides() {
+/*vector <Ride> Ride::retrieveRides() {
     vector<Ride> rides;
     sqlite3* db;
     int rc = sqlite3_open("mydb_1 (1).db", &db);
@@ -134,6 +142,6 @@ vector <Ride> Ride::retrieveRides() {
 
     return rides;
 
-}
+}*/
 
 

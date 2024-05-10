@@ -3,8 +3,9 @@
 #include <deque>
 #include <list>
 #include <vector>
-#include "User.h"
 
+#include "User.h"
+#include"Station.h"
 
 class Admin {
 public:
@@ -20,8 +21,8 @@ public:
     void editUser(vector<User>& users);
 
     // Station management
-    //void addStation(Station station);
-    //void deleteStation(int stationID);
+    void addStation(Station station);
+    void deleteStation();
     //void editStation(int stationID, Station updatedStation);
     //void viewAllStations();
     //void viewStationDetails(int stationID);

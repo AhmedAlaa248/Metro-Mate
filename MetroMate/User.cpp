@@ -490,23 +490,23 @@ vector<User> User::RetrieveUsersFromDatabase()
 	return userList;
 }
 
-int main() {
+/*int main() {
 	User user;
 	vector<User> users = user.RetrieveUsersFromDatabase();
 	bool updated = false;
 	user.Register(users, updated);
 	user.saveUsersToDatabase(users, true);
-	/*vector<User> newusers = user.RetrieveUsersFromDatabase();*/
-	/*for (const auto& usr : users) {
-		cout << "ID: " << usr.id << endl;
-		cout << "Name: " << usr.name << endl;
-		cout << "Email: " << usr.email << endl;
-		cout << "Password: " << usr.password << endl;
-		cout << "Balance: " << usr.balance << endl;
-		cout << "Subscription ID: " << usr.subId << endl;
-		cout << "Ride ID: " << usr.rideId << endl;
-		cout << "User Name: " << usr.userName << endl;
-		cout << "---------------------" << endl;*/
+	//vector<User> newusers = user.RetrieveUsersFromDatabase();
+	//for (const auto& usr : users) {
+	//	cout << "ID: " << usr.id << endl;
+	//	cout << "Name: " << usr.name << endl;
+	//	cout << "Email: " << usr.email << endl;
+	//	cout << "Password: " << usr.password << endl;
+	//	cout << "Balance: " << usr.balance << endl;
+	//	cout << "Subscription ID: " << usr.subId << endl;
+	//	cout << "Ride ID: " << usr.rideId << endl;
+	//	cout << "User Name: " << usr.userName << endl;
+	//	cout << "---------------------" << endl;
 	
-}
+}*/
 

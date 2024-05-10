@@ -116,6 +116,16 @@ void Admin::editUser(vector<User>& users) {
         }
     }
 }
+
+void Admin::addStation(Station station)
+{
+    Station::addStation();
+}
+
+void Admin::deleteStation()
+{
+    Station::removeStation();
+}
 //int main() {
 //    vector<User> users= User::RetrieveUsersFromDatabase();
 //    Admin admin;

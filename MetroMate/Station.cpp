@@ -1,36 +1,44 @@
+#include"GlobalData.h"
+#include"Ride.h"
 
-#include "Station.h"
-#include "sqlite/sqlite3.h"
-#include <winsqlite/winsqlite3.h>
+#define map GlobalData::stations
 
 Station::Station()
 {
+}
 
-	totalIncome = 0;
-	numOfSoldTickets = 0;
-	numOfSubscriptions = 0;
-	numOfPassengers = 0;
+Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link) {
+	id = idd;
+	name = namee;
+	totalIncome = inc;
+	numOfSoldTickets = tix;
+	numOfPassengers = passengers;
+	lineNum = line;
+	numOfSubscriptions = subscriptions;
+
+	string n = "";
+
+	for (int i = 0; i < link.size(); i++)
+	{
+		if (link[i] != ',')
+			n.push_back(link[i]);
+		else
+		{
+			this->connections.insert(stoi(n));
+			n = "";
+		}
+	}
 }
 
 Station::Station(string n, int line)
 {
-
+	id = nextId++;
 	name = n;
 	lineNum = line;
 	totalIncome = 0;
 	numOfSoldTickets = 0;
 	numOfSubscriptions = 0;
 	numOfPassengers = 0;
-
-}
-Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions) {
-	id = idd;
-	name = namee;
-	totalIncome = inc;
-	numOfSoldTickets = tix;
-	numOfPassengers = passengers;
-	linenum2 = line;
-	numOfSubscriptions = subscriptions;
 }
 
 int Station::getID() const
@@ -43,22 +51,23 @@ string Station::getName() const
 	return name;
 }
 
-int Station::getLineNum() const
+string Station::getLineNum() const
 {
 	return lineNum;
 }
 
-pair<bool, Station> Station::findStationByName(string name, unordered_map<int, Station> stations)
+pair<bool, Station> Station::findStationByName(string name)
 {
+
 	Station station;
+
 	bool found = false;
-	for (auto it = stations.begin(); it != stations.end(); it++)
+	for (auto it = map.begin(); it != map.end(); it++)
 	{
 		if ((*it).second.name == name)
 		{
-			station = (*it).second;
 			found = true;
-			break;
+			return pair<bool, Station>(found, (*it).second);
 		}
 	}
 	return pair<bool, Station>(found, station);
@@ -68,29 +77,28 @@ void Station::rideStarted(string type)
 {
 	if (type == "Cash Wallet")
 		numOfSoldTickets++;
-
 	numOfPassengers++;
 }
 
-
-void Station::addConnection(int station1, int station2) {
-	adjacencyList[station1].insert(station2);
-	adjacencyList[station2].insert(station1);
-}
-
-void Station::removeConnection(int station1, int station2) {
-	adjacencyList[station1].erase(station2);
-	adjacencyList[station2].erase(station1);
-}
-
-void Station::removeStation(int station) {
-	adjacencyList.erase(station);
-	for (auto& pair : adjacencyList) {
-		pair.second.erase(station);
+void Station::addConnection(int con) {
+	this->connections.insert(con);
+	if (map.find(con) != map.end())
+	{
+		map[con].connections.insert(this->id);
+		cout << this->name << " is connected successfully with " << map[con].getName() << endl;
 	}
+	else
+		cout << "Not connected try again";
+
 }
-void Station::addConnectionToStation(Station& station, unordered_map<int, Station> stations) {
-	cout << "Enter connections for station " << station.name;
+
+void Station::removeConnection(int con) {
+	connections.erase(con);
+	map[con].connections.erase(this->id);
+}
+
+void Station::addConnectionToStation() {
+	cout << "Enter connections for station " << this->name << '\n';
 	string connection;
 	int choice = 1;
 	bool first = true;
@@ -101,6 +109,8 @@ void Station::addConnectionToStation(Station& station, unordered_map<int, Statio
 			cin >> choice;
 		}
 		else first = false;
+
+
 		pair<bool, Station> response;
 
 		switch (choice)
@@ -110,12 +120,12 @@ void Station::addConnectionToStation(Station& station, unordered_map<int, Statio
 		case 1:
 			cout << "Enter the station you want connect with: ";
 			cin >> connection;
-			response = findStationByName(connection, stations);
+			response = findStationByName(connection);
 
-			if (response.first)
-				addConnection(station.id, response.second.id);
+			if (findStationByName(connection).first)
+				addConnection(findStationByName(connection).second.getID());
 			else
-				cout << "There is no station named " + connection + " in our databse.";
+				cout << "There is no station named " + connection + " in our databse.\n";
 			break;
 		default:
 			cout << "Invalid choice\n";
@@ -125,7 +135,35 @@ void Station::addConnectionToStation(Station& station, unordered_map<int, Statio
 	} while (choice != 0);
 }
 
-void Station::addStation(unordered_map<int, Station> stations)
+void Station::removeStation() {
+	int choice;
+	do
+	{
+		string name;
+		cout << "Enter station name to delete: ";
+		cin >> name;
+		pair<bool, Station> response = Station::findStationByName(name);
+		if (response.first)
+		{
+			if (map.erase(response.second.getID()))
+			{
+				cout << "Station " << name << " deleted successfully from the database\n";
+				cout << "Press:\n0.To exit\n1.To delete another station.";
+				cin >> choice;
+			}
+		}
+		else
+		{
+			cout << "There is no station named " + name + " in our databse.\n";
+			cout << "Press:\n0.To exit\n1.To try again.";
+			cin >> choice;
+		}
+	} while (choice);
+
+	Ride::startTheAdjacency();
+}
+
+void Station::addStation()
 {
 	string name;
 	int line;
@@ -134,87 +172,34 @@ void Station::addStation(unordered_map<int, Station> stations)
 	cout << "Enter station line number: ";
 	cin >> line;
 
-	Station station(name, line);
-	addConnectionToStation(station, stations);
+	Station s(name, line);
+	map[s.getID()] = s;
 
-	//Add it to the list
-	stations[id] = station;
+	s.addConnectionToStation();
+	Ride::startTheAdjacency();
 }
 
 void Station::displayDetails(string type)
 {
 	cout << "Station details:\n";
-	cout << "name: " + name;
-	cout << "\tline number: " + lineNum;
+	cout << "name: " + this->name << "\n";
+	cout << "Line number: " + this->getLineNum() << endl;
+	cout << "connected with: ";
+
+	for (auto it = connections.begin(); it != connections.end(); it++)
+	{
+		if (it == connections.begin())
+			cout << map[*it].getName();
+		else
+			cout << ", " << map[*it].getName();
+	}
+	cout << endl;
+
 	if (type == "admin")
 	{
-		cout << "\ttotal income: " + totalIncome;
-		cout << "\nnumber of sold tickets: " + numOfSoldTickets;
-		cout << "\tnumber of subscriptions: " + numOfSubscriptions;
-		cout << "\tnumber of passengers: " + numOfPassengers;
+		cout << "\ttotal income: " + this->totalIncome;
+		cout << "\nnumber of sold tickets: " + this->numOfSoldTickets;
+		cout << "\tnumber of subscriptions: " + this->numOfSubscriptions;
+		cout << "\tnumber of passengers: " + this->numOfPassengers << endl;
 	}
 }
-vector<Station> Station::RetrieveStationsFromDatabase()
-{
-	vector<Station> Stations;
-	sqlite3* db;
-	int rc = sqlite3_open("mydb_1 (1).db", &db);
-
-	if (rc != SQLITE_OK)
-	{
-		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db);
-		return Stations;
-	}
-
-
-	const char* sql = "SELECT * FROM Stations";
-
-	sqlite3_stmt* stmt;
-	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-	if (rc != SQLITE_OK)
-	{
-		cout << "Error preparing the SQL statement" << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db);
-		return Stations;
-	}
-
-	while (sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		int station_id = sqlite3_column_int(stmt, 0);
-		const char* station_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-		int income = sqlite3_column_int(stmt, 2);
-		int tickets = sqlite3_column_int(stmt, 3);
-		int n_passengers = sqlite3_column_int(stmt, 4);
-		const char* metroline = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
-		int n_subscribtions = sqlite3_column_int(stmt, 6);
-
-
-		// Creating SubscriptionPlan objects and adding them to the vector
-		Station s(station_id, station_name, income, tickets, n_passengers, metroline, n_subscribtions);
-		Stations.push_back(s);
-	}
-
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
-
-	return Stations;
-}
-void Station::printDetails() {
-	cout << "Station ID: " << id << endl;
-	cout << "Station Name: " << name << endl;
-	cout << "Income: " << totalIncome << endl;
-	cout << "Tickets: " << numOfSoldTickets << endl;
-	cout << "Number of Passengers: " << numOfPassengers << endl;
-	cout << "Metro Line: " << linenum2 << endl;
-	cout << "Number of Subscriptions: " << numOfSubscriptions << endl;
-	cout << endl;
-}
-//int main() {
-//	Station w;
-//	vector <Station> q = w.RetrieveStationsFromDatabase();
-//	for (auto z : q) {
-//		z.printDetails();
-//	}
-//}

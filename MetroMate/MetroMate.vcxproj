@@ -128,10 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="GlobalData.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MetroSystem.cpp" />
     <ClCompile Include="Ride.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="sqlite\sqlite3.c" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="Subscription.cpp" />
     <ClCompile Include="SubscriptionPlan.cpp" />
@@ -140,9 +142,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
+    <ClInclude Include="GlobalData.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MetroSystem.h" />
     <ClInclude Include="Ride.h" />
+    <ClInclude Include="sqlite\sqlite3.h" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="Subscription.h" />
     <ClInclude Include="SubscriptionPlan.h" />
