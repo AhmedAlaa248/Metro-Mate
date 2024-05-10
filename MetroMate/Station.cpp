@@ -81,7 +81,8 @@ void Station::rideStarted(string type)
 }
 
 void Station::addConnection(int con) {
-	this->connections.insert(con);
+	connections.insert(con);
+	map[this->id].connections = this->connections;
 	if (map.find(con) != map.end())
 	{
 		map[con].connections.insert(this->id);
