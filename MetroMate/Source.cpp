@@ -15,6 +15,9 @@ unordered_map <int, Station> GlobalData::stations = s;
 
 int Station::nextId = 1;
 
+void main() {
+
+}
 
 /*int main() {
 	GlobalData::RetrieveStationsFromDatabase();

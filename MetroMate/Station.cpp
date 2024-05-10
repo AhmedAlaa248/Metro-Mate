@@ -95,7 +95,7 @@ void Station::addConnection(int con) {
 
 void Station::removeConnection(int con) {
 	connections.erase(con);
-	map[con].connections.erase(this->id);
+	map[this->id].connections = this->connections;
 }
 
 void Station::addConnectionToStation() {
@@ -146,6 +146,9 @@ void Station::removeStation() {
 		pair<bool, Station> response = Station::findStationByName(name);
 		if (response.first)
 		{
+			for (auto it = response.second.connections.begin(); it != response.second.connections.end(); it++)
+				map[*it].removeConnection(response.second.getID());
+
 			if (map.erase(response.second.getID()))
 			{
 				cout << "Station " << name << " deleted successfully from the database\n";
@@ -187,12 +190,19 @@ void Station::displayDetails(string type)
 	cout << "Line number: " + this->getLineNum() << endl;
 	cout << "connected with: ";
 
-	for (auto it = connections.begin(); it != connections.end(); it++)
+	if (connections.empty())
 	{
-		if (it == connections.begin())
-			cout << map[*it].getName();
-		else
-			cout << ", " << map[*it].getName();
+		cout << "NONE.";
+	}
+	else
+	{
+		for (auto it = connections.begin(); it != connections.end(); it++)
+		{
+			if (it == connections.begin())
+				cout << map[*it].getName();
+			else
+				cout << ", " << map[*it].getName();
+		}
 	}
 	cout << endl;
 
