@@ -56,7 +56,7 @@ vector<Subscription> Subscription::Subscriptions()
 {
     vector<Subscription> subscriptionList;
     sqlite3* db;
-    int rc = sqlite3_open("mydb_1 (1).db", &db);
+    int rc = sqlite3_open("mydb_1_1.db", &db);
 
     if (rc != SQLITE_OK)
     {
@@ -100,7 +100,6 @@ vector<Subscription> Subscription::Subscriptions()
 
     return subscriptionList;
 }
-
 
 int Subscription::stages()
 {
@@ -205,3 +204,22 @@ void Subscription::printDetails()
     }
 
 }
+
+void Subscription::printsubdetails(Subscription& z) {
+    cout << "Subscription ID: " << z.ID << endl;
+    cout << "User ID: " << z.user_idd << endl;
+    cout << "Type: " << z.Type << endl;
+    cout << "Subscription Date: " << z.Sub_datee << endl;
+    cout << "End Date: " << z.End_datee << endl;
+    cout << "Remaining Rides: " << z.remaining_rides << endl;
+    cout << "Source Station: " << z.source_station << endl;
+    cout << "Final Station: " << z.final_station << endl;
+
+
+}
+//int main()
+//{
+//
+//    Subscription sub;
+//    sub.printDetails();
+//}

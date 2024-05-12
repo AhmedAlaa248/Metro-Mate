@@ -15,29 +15,36 @@ unordered_map <int, Station> GlobalData::stations = s;
 
 int Station::nextId = 1;
 
-void main() {
-
-}
-
-/*int main() {
-	GlobalData::RetrieveStationsFromDatabase();
-	Ride::startTheAdjacency();
-
-	Admin admin;
-
-	for (auto it = GlobalData::stations.begin(); it != GlobalData::stations.end(); it++) {
-		if (it->second.getName() == "")
-		{
-			GlobalData::stations.erase(it->second.getID());
-			continue;
-		}
-
-		it->second.displayDetails("user");
-
-	}
-
-	return 1;
-}*/
+//int main() {
+//
+//	GlobalData::RetrieveStationsFromDatabase();
+//	Ride::startTheAdjacency();
+//
+//	Admin admin;
+//	for (auto it = GlobalData::stations.begin(); it != GlobalData::stations.end(); it++) {
+//		if (it->second.getName() == "")
+//		{
+//			GlobalData::stations.erase(it->second.getID());
+//			continue;
+//		}
+//
+//		it->second.displayDetails("user");
+//	}
+//	Station o;
+//	admin.addStation(o);
+//
+//	for (auto it = GlobalData::stations.begin(); it != GlobalData::stations.end(); it++) {
+//		if (it->second.getName() == "")
+//		{
+//			GlobalData::stations.erase(it->second.getID());
+//			continue;
+//		}
+//
+//		it->second.displayDetails("user");
+//	}
+//
+//	return 1;
+//}
 
 
 //void main() {

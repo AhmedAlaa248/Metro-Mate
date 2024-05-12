@@ -15,7 +15,7 @@ public:
 	string password;
 	string email;
 	Subscription subscription;
-	Ride ride;
+	vector<Ride> ride;
 	int subId;
 	int rideId;
 	vector<User> users;
@@ -30,21 +30,20 @@ public:
 	}
 
 
-	void Register(vector<User>& users, bool& infoUpdated); // make the bool infoUpdated = true if successfully Registered
-	static void saveUsersToDatabase(vector<User>& users, bool Register);
+	void Register(vector<User>& users); // make the bool infoUpdated = true if successfully Registered
+	static void saveUsersToDatabase(vector<User>& users);
 	static vector<User> RetrieveUsersFromDatabase();
-	string Login(vector<User> users);		// return the username
-	void updateInfo(vector<User>& users, bool& infoUpdated); // make the bool infoUpdated = true if Info successfully updated
+	void updateInfo(vector<User>& users); // make the bool infoUpdated = true if Info successfully updated
+	string Looogin(vector<User> users, bool& q);
 
-	Subscription purchaseSub(vector <Subscription>&, User&);
-	void renewSub(int, vector <Subscription>&, User&);
+	Subscription purchaseSub(vector <Subscription>&, User&, vector <Station>&);
+	void renewSub(int, vector <Subscription>&, User&, vector <SubscriptionPlan>);
 	tm addDaysToDate(const tm& date, int daysToAdd);
+	string Login(vector<User> users);
 	void renewSub();   
-	void changeSub();
-	void checkIn(Station source, Station destination);
-	void checkOut();
-	Ride viewRide();  // view ride for specific user
-
+	void checkIn(string, string, vector <Ride>&, vector <Station>&, User&);
+	void viewRide(User& user);
+	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations);
 
 };
 

@@ -5,7 +5,7 @@
 
 using namespace std;
 class SubscriptionPlan {
-private:
+public:
     int type;
     int price;
     int duration;
@@ -52,6 +52,7 @@ public:
     int calculateYearlyPublicFare(int stage) const;
     int calculateCashWalletFare(int numStations) const;
     void DisplayAllPlans() const;
+    void saveSubplanToDatabase(vector<SubscriptionPlan>& subplans);
 
 
     static vector<SubscriptionPlan>RetrieveSubplansFromDatabase();

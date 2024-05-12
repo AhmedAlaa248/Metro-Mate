@@ -26,4 +26,5 @@ public:
     void saveSubscriptionToDatabase();
     void printDetails();
     vector<Subscription>Subscriptions();
+    void static printsubdetails(Subscription&);
 };

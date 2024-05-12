@@ -140,7 +140,7 @@ vector<SubscriptionPlan> SubscriptionPlan::RetrieveSubplansFromDatabase()
 {
 	vector<SubscriptionPlan> subplanList;
 	sqlite3* db;
-	int rc = sqlite3_open("mydb_1 (1).db", &db);
+	int rc = sqlite3_open("mydb_1_1.db", &db);
 
 	if (rc != SQLITE_OK)
 	{
@@ -225,6 +225,63 @@ void SubscriptionPlan::DisplayAllPlans() const {
 	}
 }
 
+void SubscriptionPlan::saveSubplanToDatabase(vector<SubscriptionPlan>& subplans)
+{
+	sqlite3* db;
+	int rc = sqlite3_open("mydb_1_1.db", &db);
+
+	if (rc != SQLITE_OK) {
+		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return;
+	}
+
+	// Delete all existing records from the Subplan table
+	const char* delete_sql = "DELETE FROM Subplan";
+	rc = sqlite3_exec(db, delete_sql, nullptr, nullptr, nullptr);
+
+	if (rc != SQLITE_OK) {
+		cout << "Error deleting records from the Subplan table: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return;
+	}
+
+	// SQL query to insert a new record
+	const char* insert_sql = "INSERT INTO Subplan ([plan_id], [plan_name], duration, price, trips, stages, type, [N.Stations]) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+	for (const auto& subplan : subplans) {
+		sqlite3_stmt* stmt;
+		rc = sqlite3_prepare_v2(db, insert_sql, -1, &stmt, nullptr);
+
+		if (rc != SQLITE_OK) {
+			cout << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << endl;
+			sqlite3_close(db);
+			return;
+		}
+
+		// Bind parameters to the prepared statement
+		sqlite3_bind_int(stmt, 1, subplan.plan_id);
+		sqlite3_bind_text(stmt, 2, subplan.plan_name.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_int(stmt, 3, subplan.duration);
+		sqlite3_bind_int(stmt, 4, subplan.price);
+		sqlite3_bind_int(stmt, 5, subplan.trips);
+		sqlite3_bind_int(stmt, 6, subplan.stages);
+		sqlite3_bind_int(stmt, 7, subplan.type);
+		sqlite3_bind_int(stmt, 8, subplan.numStations);
+
+		// Execute the SQL statement
+		rc = sqlite3_step(stmt);
+
+		if (rc != SQLITE_DONE) {
+			cout << "Error executing the SQL statement: " << sqlite3_errmsg(db) << endl;
+		}
+
+		// Finalize the statement
+		sqlite3_finalize(stmt);
+	}
+
+	sqlite3_close(db);
+}
 
 
 
