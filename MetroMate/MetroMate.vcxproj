@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Admin.cpp" />
-    <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="mainpj.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MetroSystem.cpp" />
     <ClCompile Include="Ride.cpp" />
@@ -144,7 +144,6 @@
     <ClInclude Include="Admin.h" />
     <ClInclude Include="GlobalData.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="MetroSystem.h" />
     <ClInclude Include="Ride.h" />
     <ClInclude Include="sqlite\sqlite3.h" />
     <ClInclude Include="Station.h" />

@@ -1,12 +1,3 @@
-﻿  Menu.cpp
-  MetroSystem.cpp
-  Ride.cpp
-  Source.cpp
-C:\Users\omark\Desktop\Metro-Mate\MetroMate\Source.cpp(7,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Station.cpp
-  Subscription.cpp
-  SubscriptionPlan.cpp
-  User.cpp
-  Validator.cpp
-  Generating Code...
-  MetroMate.vcxproj -> C:\Users\omark\Desktop\Metro-Mate\MetroMate\x64\Debug\MetroMate.exe
+﻿  mainpj.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\optional(11): warning STL4038: The contents of <optional> are available only with C++17 or later.
+  MetroMate.vcxproj -> C:\Users\abdel\source\repos\Metro-Mate\MetroMate\x64\Debug\MetroMate.exe
