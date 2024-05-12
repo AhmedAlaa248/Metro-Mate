@@ -2,8 +2,6 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "GlobalData.h"
-
 
 using namespace std;
 

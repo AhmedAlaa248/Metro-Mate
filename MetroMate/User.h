@@ -3,6 +3,7 @@
 #include "Subscription.h"
 #include "Ride.h"
 #include"sqlite/sqlite3.h"
+#include "Station.h"
 
 using namespace std;
 class User
