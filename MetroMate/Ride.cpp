@@ -4,17 +4,19 @@
 #include <sstream>
 #include <ctime>
 #include <string>
+#include "winsqlite/winsqlite3.h"
+
 
 Ride::Ride()
 {
 }
 
-Ride::Ride(int rideId, string src, string dest, int station_id, string date, int usr_id)
+Ride::Ride(int rideId, string src, string dest, int stationId, string date, int usr_id)
 {
 	id = rideId;
 	source = src;
 	destination = dest;
-	stationId = station_id;
+	this->stationId = stationId;
 	ridedate = date;
 	user_id = usr_id;
 
@@ -61,7 +63,7 @@ vector<Ride> Ride::RetrieveRidesFromDatabase() {
 
 	return rides;
 }
-void saveRideToDatabase(vector<Ride>& rides)
+void Ride:: saveRideToDatabase(vector<Ride>& rides)
 {
 
 

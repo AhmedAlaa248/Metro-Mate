@@ -6,13 +6,13 @@
 #include <optional>
 #include <utility>
 #include <map>
-
+#include "unordered_map"
 
 using namespace std;
 
 class Station
 {
-	
+
 
 public:
 	static int nextId;	//auto increament
@@ -30,28 +30,20 @@ public:
 	Station(string n, int line);
 	Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link);
 	string GetStationNameFromID(vector<Station>& stations, int id);
-	int GetStationIdFromName(vector<Station>, string);	
+	//Getters
 	int getID() const;
 	string getName() const;
 	string getLineNum() const;
 	int FindLengthOfSpecificPath(int);
-	//static pair<bool, Station> findStationByName(string name);
-    //void rideStarted(string type);
-	//void addConnection(int con);
-	//void removeConnection(int con);
-	//void addConnectionToStation();
-	//static void removeStation();
-	//static void addStation();
-	//void displayDetails(string type);
-	//static string getNameById(int id);
-	void saveStationToDatabase(vector<Station>& stations);
 	vector<Station> RetrieveStationsFromDatabase();
 	vector<vector<string>> findAllPaths(string, string);
 	void addStation(string station);
 	void removeConnection(string, string);
-	void addConnection(string , string );
-	void dfs(string, string, vector<string>&, map<string,bool>&);
+	void addConnection(string, string);
+	void dfs(string, string, vector<string>&, map<string, bool>&);
 	void removeStation(string station);
 	void addToAdjacency(vector<Station>& stations);
-
+	int GetStationIdFromName(vector<Station>, string name);
+	void saveStationToDatabase(vector<Station>& stations);
 };
+

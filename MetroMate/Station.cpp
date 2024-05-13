@@ -1,10 +1,10 @@
-
+#include "Station.h"
 #include"Ride.h"
 #include <string>
 #include <unordered_set>
 #include <optional>
 #include <utility>
-
+#include "sqlite/sqlite3.h"
 
 Station::Station()
 {
@@ -21,33 +21,43 @@ string Station::GetStationNameFromID(vector<Station>& stations, int id)
 	}
 	return "";
 }
+int Station::GetStationIdFromName(vector<Station> stations, string name) {
+	for (const auto& station : stations) {
+		if (station.getName() == name) {
+			return station.getID();
+		}
+	}
+	return -1; // Return -1 if station name is not found
+}
 
-void Station:: addToAdjacency(vector<Station>& stations) {
-	
+
+void Station::addToAdjacency(vector<Station>& stations) {
+
 	for (const auto& station : stations)
 	{
 		string y = "";
-		for (int i = 0; i < station.link.size();i++) {
-			
+		for (int i = 0; i < station.link.size(); i++) {
+
 			if (station.link[i] != ',') {
 				y += station.link[i];
 			}
 			else {
 				int x = stoi(y);
-					
+
 				y = "";
-			string w=GetStationNameFromID(stations, x);
-			addConnection(station.name, w);
-				
+				string w = GetStationNameFromID(stations, x);
+				addConnection(station.name, w);
+
 			}
-		
+
 		}
-		
+
 	}
 
 
 
 }
+
 
 Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link) {
 	id = idd;
@@ -58,23 +68,12 @@ Station::Station(int idd, string namee, int inc, int tix, int passengers, string
 	lineNum = line;
 	numOfSubscriptions = subscriptions;
 	this->link = link;
-	string n = "";
 
-	//for (int i = 0; i < link.size(); i++)
-	//{
-	//	if (link[i] != ',')
-	//		n.push_back(link[i]);
-	//	else
-	//	{
-	//		this->connections.insert(stoi(n));
-	//		n = "";
-	//	}
-	//}
 }
 
 Station::Station(string n, int line)
 {
-	id = nextId++;
+//	id = nextId++;
 	name = n;
 	lineNum = line;
 	totalIncome = 0;
@@ -98,21 +97,15 @@ string Station::getLineNum() const
 	return lineNum;
 }
 
-int Station::GetStationIdFromName(vector<Station> stations, string name) {
-	for (const auto& station : stations) {
-		if (station.getName() == name) {
-			return station.getID();
-		}
-	}
-	return -1;
-}
 
-void Station:: addConnection(string station1, string station2) {
+
+void Station::addConnection(string station1, string station2) {
 	adjacencyList[station1].insert(station2);
 	adjacencyList[station2].insert(station1);
 }
 
-void Station:: removeConnection(string station1, string station2) {
+
+void Station::removeConnection(string station1, string station2) {
 	if (adjacencyList.find(station1) != adjacencyList.end()) {
 		adjacencyList[station1].erase(station2);
 	}
@@ -121,7 +114,7 @@ void Station:: removeConnection(string station1, string station2) {
 	}
 }
 
-void Station :: addStation(string station) {
+void Station::addStation(string station) {
 	vector<string> neighbors;
 	char choice;
 	do {
@@ -148,7 +141,7 @@ void Station::removeStation(string station) {
 	}
 }
 
-void Station::dfs(string source, string destination, vector<string> &path, map<string,bool> &visited) {
+void Station::dfs(string source, string destination, vector<string>& path, map<string, bool>& visited) {
 	visited[source] = true;
 	path.push_back(source);
 
@@ -164,10 +157,11 @@ void Station::dfs(string source, string destination, vector<string> &path, map<s
 	}
 
 	visited[source] = false;
+
 	path.pop_back();
 }
 
-vector<vector<string>> Station:: findAllPaths(string source, string destination) {
+vector<vector<string>> Station::findAllPaths(string source, string destination) {
 	map<string, bool> visited;
 	vector<string> path;
 	dfs(source, destination, path, visited);
@@ -179,7 +173,7 @@ vector<vector<string>> Station:: findAllPaths(string source, string destination)
 	return allPaths;
 }
 
-vector<Station> Station ::RetrieveStationsFromDatabase()
+vector<Station> Station::RetrieveStationsFromDatabase()
 {
 	vector <Station> stations;
 
@@ -224,6 +218,15 @@ vector<Station> Station ::RetrieveStationsFromDatabase()
 	return stations;
 }
 
+int Station::FindLengthOfSpecificPath(int index) {
+	if (index >= 0 && index < allPaths.size()) {
+		return allPaths[index].size();
+	}
+	else {
+		return -1; // Return -1 if the index is out of range
+	}
+
+}
 void Station::saveStationToDatabase(vector<Station>& stations)
 {
 
@@ -283,34 +286,3 @@ void Station::saveStationToDatabase(vector<Station>& stations)
 
 	sqlite3_close(db);
 }
-
-
-int Station::FindLengthOfSpecificPath(int index) {
-	if (index >= 0 && index < allPaths.size()) {
-		return allPaths[index].size();
-	}
-	else {
-		return - 1;
-	}
-
-}
-
-//int main() {
-//	Station station;
-//	vector<Station> stations;
-//	stations = station.RetrieveStationsFromDatabase();
-//
-//	cout << "All Stations:\n";
-//	for (const auto& station : stations) {
-//		cout << "Station ID: " << station.id << endl;
-//		cout << "Name: " << station.name << endl;
-//		cout << "Income: " << station.totalIncome << endl;
-//		cout << "Tickets: " << station.numOfSoldTickets << endl;
-//		cout << "Number of Passengers: " << station.numOfPassengers << endl;
-//		cout << "Metro Line: " << station.lineNum << endl;
-//		cout << "Number of Subscriptions: " << station.numOfSubscriptions << endl;
-//		cout << "Link: " << station.link << endl;
-//		cout << "-----------------------------------\n";
-//	}
-//
-//}
