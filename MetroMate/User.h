@@ -35,13 +35,12 @@ public:
 	static void saveUsersToDatabase(vector<User>& users);
 	static vector<User> RetrieveUsersFromDatabase();
 	void updateInfo(vector<User>& users); // make the bool infoUpdated = true if Info successfully updated
-	string Looogin(vector<User> users, bool& q);
+	User Looogin(vector<User> users, bool& q);
 
 	Subscription purchaseSub(vector <Subscription>&, User&, vector <Station>&);
 	void renewSub(int, vector <Subscription>&, User&, vector <SubscriptionPlan>);
 	tm addDaysToDate(const tm& date, int daysToAdd);
 	string Login(vector<User> users);
-	void renewSub();   
 	void checkIn(string, string, vector <Ride>&, vector <Station>&, User&);
 	void viewRide(User& user);
 	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations);

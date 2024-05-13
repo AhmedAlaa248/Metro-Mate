@@ -18,7 +18,7 @@ public:
     Ride();
     Ride(int rideId, string src, string dest, int stationId, string date, int usr_id);
     vector<Ride> RetrieveRidesFromDatabase();
-
+    vector<Ride> GetRidesForUser(int);
     void saveRideToDatabase(vector<Ride>& rides);
 };
 

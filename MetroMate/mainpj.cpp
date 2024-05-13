@@ -24,6 +24,8 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 		cout << "Purchase.\n";
 		user.purchaseSub(subs, user, stations);
 
+
+		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
@@ -65,7 +67,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 			cout << "Invalid choice.\n";
 			break;
 		}
-
+		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
@@ -73,26 +75,30 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 		cout << "checked In.\n";
 
 
-
+		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 4:
 		cout << "Checked out.\n";
 
-
+		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 5:
 		cout << "Rides history.\n";
 		user.viewRide(user);
+
+
+		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 6:
 		cout << "info updated.\n";
 		//       user.updateInfo(user, infoupdate);
+
 
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
@@ -131,7 +137,8 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 	switch (choice) {
 	case 1:
 		cout << "Login selected.\n";
-		username = user.Looogin(users, login);
+		user = user.Looogin(users, login);
+		cout << user.id << " " << user.userName << endl << user.subscription.final_station << "  " << user.ride[0].id;
 		if (login) {
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;

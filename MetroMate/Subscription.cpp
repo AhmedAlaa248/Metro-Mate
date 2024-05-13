@@ -101,6 +101,53 @@ vector<Subscription> Subscription::Subscriptions()
     return subscriptionList;
 }
 
+Subscription Subscription::getSubscriptionForUser(int userId) {
+    Subscription subscription;
+
+    // Your database connection code here
+    sqlite3* db;
+    int rc = sqlite3_open("mydb_1_1.db", &db);
+
+    if (rc != SQLITE_OK) {
+        cerr << "Error opening the database: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subscription;
+    }
+
+    // Prepare SQL statement
+    string sql = "SELECT * FROM Subscription WHERE user_idd = ?";
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return subscription;
+    }
+
+    // Bind the user ID parameter
+    sqlite3_bind_int(stmt, 1, userId);
+
+    // Execute the statement and retrieve data
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        subscription.ID = sqlite3_column_int(stmt, 0);
+        subscription.Type = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        subscription.Sub_datee = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        subscription.End_datee = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        subscription.remaining_rides = sqlite3_column_int(stmt, 4);
+        subscription.user_idd = sqlite3_column_int(stmt, 5);
+        subscription.sub_idd = sqlite3_column_int(stmt, 6);
+        subscription.source_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
+        subscription.final_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
+    }
+
+    // Finalize statement and close database
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return subscription;
+}
+
 int Subscription::stages()
 {
     int numOfStations = subPlan.getNumStations();

@@ -123,6 +123,58 @@ void Ride:: saveRideToDatabase(vector<Ride>& rides)
 	sqlite3_close(db);
 }
 
+
+ vector<Ride> Ride:: GetRidesForUser(int user_id) {
+	 std::vector<Ride> user_rides;
+
+	 sqlite3* db;
+	 int rc = sqlite3_open("mydb_1_1.db", &db);
+
+	 if (rc != SQLITE_OK) {
+		 std::cerr << "Error opening the database: " << sqlite3_errmsg(db) << std::endl;
+		 sqlite3_close(db);
+		 return user_rides; 
+	 }
+
+	 const char* sql = "SELECT * FROM Rides WHERE User_id = ?";
+
+	 sqlite3_stmt* stmt;
+	 rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+	 if (rc != SQLITE_OK) {
+		 std::cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << std::endl;
+		 sqlite3_close(db);
+		 return user_rides; 
+	 }
+
+
+	 rc = sqlite3_bind_int(stmt, 1, user_id);
+	 if (rc != SQLITE_OK) {
+		 std::cerr << "Error binding parameter: " << sqlite3_errmsg(db) << std::endl;
+		 sqlite3_finalize(stmt);
+		 sqlite3_close(db);
+		 return user_rides; 
+	 }
+
+	
+	 while (sqlite3_step(stmt) == SQLITE_ROW) {
+		 Ride ride;
+		 ride.id = sqlite3_column_int(stmt, 0);
+		 ride.source = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		 ride.destination = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+		 ride.stationId = sqlite3_column_int(stmt, 3);
+		 ride.ridedate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+		 ride.user_id = sqlite3_column_int(stmt, 5);
+		 user_rides.push_back(ride);
+	 }
+
+	 
+	 sqlite3_finalize(stmt);
+	 sqlite3_close(db);
+
+	 return user_rides;
+}
+
 //int main()
 //{
 //	Ride ride;

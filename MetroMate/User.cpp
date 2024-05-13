@@ -259,18 +259,19 @@ string User::Login(vector<User> users) {
 	cout << "Maximum login attempts reached. Exiting.\n";
 	return "";
 }
-string User::Looogin(vector<User> users, bool& q) {
+User User::Looogin(vector<User> users, bool& q) {
 	Validator validator;
+	Ride Rides;
+	Subscription Subs;
 
-	int maxAttempts = 3; // Maximum number of login attempts allowed
-	int attempts = 0; // Current number of login attempts
+	int maxAttempts = 3;
+	int attempts = 0;
 
 	string userName;
 	string password;
-
+	bool validUsername = false;
+	bool validPassword = false;
 	while (attempts < maxAttempts) {
-		bool validUsername = false;
-		bool validPassword = false;
 
 		cout << "Enter username: ";
 		cin >> userName;
@@ -285,33 +286,51 @@ string User::Looogin(vector<User> users, bool& q) {
 		if (!validUsername) {
 			cout << "Username not correct. Please try again.\n";
 			++attempts;
-			continue; // Skip password input if username is incorrect
+			continue;
+		}
+		if (validUsername) {
+			attempts = 0;;
+			break;
 		}
 
-		cout << "Enter password: ";
-		cin >> password;
+	}
+	if (validUsername) {
+		while (attempts < maxAttempts) {
 
-		for (const auto& user : users) {
-			if (user.userName == userName && user.password == password) {
-				validPassword = true;
+
+			cout << "Enter password: ";
+			cin >> password;
+
+			for (const auto& user : users) {
+				if (user.userName == userName && user.password == password) {
+					validPassword = true;
+					q = true;
+					User founduser(user.id, user.name, user.email, user.password, user.balance, user.subId, user.rideId, user.userName);
+					founduser.ride = Rides.GetRidesForUser(founduser.id);
+					founduser.subscription = Subs.getSubscriptionForUser(founduser.id);
+					return founduser;
+					break;
+				}
+			}
+
+			if (!validPassword) {
+				cout << "Wrong Password. Please try again.\n";
+				++attempts;
+			}
+			else {
+				cout << "Login successful\n";
 				break;
+				
 			}
 		}
-
-		if (!validPassword) {
-			cout << "Wrong Password. Please try again.\n";
-			++attempts;
-		}
-		else {
-			cout << "Login successful\n";
-			q = true;
-			return userName;
-		}
+	}
+	else {
+		// If max attempts reached without successful login, inform user and return empty string
+		cout << "Maximum login attempts reached. Exiting.\n";
+		
+		
 	}
 
-	// If max attempts reached without successful login, inform user and return empty string
-	cout << "Maximum login attempts reached. Exiting.\n";
-	return "";
 }
 void User::saveUsersToDatabase(vector<User>& users) {
 	sqlite3* db;
