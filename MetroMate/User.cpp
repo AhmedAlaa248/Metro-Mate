@@ -945,10 +945,3 @@ void User::viewRide(User& user) {
 		cout << "Ride Fare : " << user.ride[i].fare << endl;
 	}
 }
-int main()
-{
-	User user;
-	vector<User> users = user.RetrieveUsersFromDatabase();
-	user.updateInfo(users);
-	user.saveUsersToDatabase(users);
-}

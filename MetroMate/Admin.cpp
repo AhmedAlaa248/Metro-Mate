@@ -153,8 +153,8 @@ void Admin::editUser(vector<User>& users) {
     Validator validator;
     string newName, newEmail, newPassword, newUsername;
 
-    while (!userFound) {
-        cout << "Enter the User ID you want to edit " << endl;
+    while (true) {
+        cout << "Enter the User ID you want to edit: ";
         cin >> userID;
 
         // Handle non-numeric input for user ID
@@ -165,12 +165,28 @@ void Admin::editUser(vector<User>& users) {
             continue;
         }
 
+        // Check if the user ID exists
+        userFound = false;
+        for (const auto& user : users) {
+            if (user.id == userID) {
+                userFound = true;
+                break;
+            }
+        }
+
+        // If user ID doesn't exist, prompt to re-enter
+        if (!userFound) {
+            cout << "User not found. Please try again." << endl;
+            continue;
+        }
+
+        // If user ID exists, proceed with editing
         cout << "Enter the new name: ";
         cin >> newName;
 
         // Validate new username
         while (true) {
-            cout << "Enter your username:\n";
+            cout << "Enter your username: ";
             cin >> newUsername;
 
             if (!validator.UsedUserName(newUsername)) {
@@ -183,7 +199,7 @@ void Admin::editUser(vector<User>& users) {
 
         // Validate new email
         while (true) {
-            cout << "Enter your email:\n";
+            cout << "Enter your email: ";
             cin >> newEmail;
 
             if (validator.isValidEmailAddress(newEmail)) {
@@ -196,10 +212,10 @@ void Admin::editUser(vector<User>& users) {
 
         // Validate new password
         while (true) {
-            cout << "Enter new password:\n";
+            cout << "Enter new password: ";
             cin >> newPassword;
 
-            cout << "Confirm password:\n";
+            cout << "Confirm password: ";
             string confirmPassword;
             cin >> confirmPassword;
 
@@ -230,13 +246,16 @@ void Admin::editUser(vector<User>& users) {
                 user.balance = newBalance;
 
                 cout << "User updated successfully." << endl;
-                userFound = true;
                 break;
             }
         }
 
-        if (!userFound) {
-            cout << "User not found. Please try again." << endl;
+        // Prompt to continue or exit editing
+        char choice;
+        cout << "Do you want to edit another user? (y/n): ";
+        cin >> choice;
+        if (choice != 'y' && choice != 'Y') {
+            break;
         }
     }
 }
@@ -680,7 +699,6 @@ void Admin::editStation(vector<Station>& stations)
     }
 }
 
-
 void Admin::viewAllRideLogs(vector<Ride>& rides)
 {
 
@@ -699,4 +717,46 @@ void Admin::viewAllRideLogs(vector<Ride>& rides)
 
     
 }
+
+void Admin::viewStation(vector<Station>& stations) {
+    bool stationFound = false;
+
+    if (stations.empty()) {
+        cout << "No stations available to view." << endl;
+        return;
+    }
+
+    while (!stationFound) {
+        cout << "Enter the Station ID you want to view its details: ";
+        int stationID;
+        cin >> stationID;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a numeric ID." << endl;
+            continue;
+        }
+
+        for (const auto& station : stations) {
+            if (station.id == stationID) {
+                cout << "Station Details:" << endl;
+                cout << "ID: " << station.id << endl;
+                cout << "Name: " << station.name << endl;
+                cout << "Line Number: " << station.lineNum << endl;
+                cout << "Link: " << station.link << endl;
+                cout << "Total Income: " << station.totalIncome << endl;
+                cout << "Number of Sold Tickets: " << station.numOfSoldTickets << endl;
+                cout << "Number of Subscriptions: " << station.numOfSubscriptions << endl;
+                cout << "Number of Passengers: " << station.numOfPassengers << endl;
+                stationFound = true;
+                break;
+            }
+        }
+
+        if (!stationFound)
+            cout << "Station not found. Please try again." << endl;
+    }
+}
+
 

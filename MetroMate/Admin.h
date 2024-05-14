@@ -41,4 +41,6 @@ public:
 
     void viewAllRideLogs(vector<Ride>& rides);
 
+    void viewStation(vector<Station>& stations);
+
 };

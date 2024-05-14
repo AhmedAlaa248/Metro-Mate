@@ -124,8 +124,6 @@ void Ride::saveRideToDatabase(vector<Ride>& rides)
 
 	sqlite3_close(db);
 }
-
-
 vector<Ride> Ride::GetRidesForUser(int user_id) {
 	std::vector<Ride> user_rides;
 

@@ -26,7 +26,7 @@ public:
     vector <string> stationofpath(vector<vector<string>>, int);
     vector<string>pathchoices;
     int stages();
-    void saveSubscriptionToDatabase();
+    void saveSubscriptionToDatabase(vector<Subscription> &subs);
     void printDetails();
     vector<Subscription>RetrieveSubscriptionFromDatabase();
     void static printsubdetails(Subscription&);

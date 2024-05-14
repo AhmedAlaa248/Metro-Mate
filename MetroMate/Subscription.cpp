@@ -23,36 +23,42 @@ Subscription::Subscription(int id, std::string type, std::string subDate, std::s
     final_station = finalStation; // Assign the value to the new attribute
     path = pathh;
 }
-void Subscription::saveSubscriptionToDatabase() {
+
+
+void Subscription::saveSubscriptionToDatabase(vector<Subscription>& subs) {
     sqlite3* db;
     char* errorMessage = nullptr;
 
     // Open the database
-    int rc = sqlite3_open("mydb_1 (1).db", &db);
+    int rc = sqlite3_open("mydb_1_1.db", &db);
     if (rc) {
         cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
         sqlite3_close(db);
         return;
     }
 
-    // SQL statement to insert subscription data
-    string sql = "INSERT INTO Subscription (Type, Sub_date, End_date, remaining_rides, user_idd, sub_idd, [SourceStation ], FinalStation, ) "
-        "VALUES ('" + Type + "', '" + Sub_datee + "', '" + End_datee + "', " + to_string(remaining_rides) + ", " + to_string(user_idd) + ", " + to_string(sub_idd) + ", '" + source_station + "', '" + final_station + "', " + to_string(path) + "')";
-
-    // Execute the SQL statement
-    rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errorMessage);
+    // Delete all existing records from the Subscription table
+    const char* delete_sql = "DELETE FROM Subscription";
+    rc = sqlite3_exec(db, delete_sql, nullptr, nullptr, nullptr);
     if (rc != SQLITE_OK) {
-        cerr << "SQL error: " << errorMessage << endl;
-        sqlite3_free(errorMessage);
-    }
-    else {
-        cout << "Subscription data saved to the database." << endl;
+        cerr << "Error deleting records from the Subscription table: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return;
     }
 
-    // Close the database
-    sqlite3_close(db);
+    // SQL statement to insert subscription data
+    string sql = "INSERT INTO Subscription (Type, Sub_date, End_date, remaining_rides, user_idd, sub_idd, [SourceStation ], FinalStation) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Prepare the SQL statement
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return;
+    }
 }
-
 vector<Subscription> Subscription::RetrieveSubscriptionFromDatabase()
 {
     vector<Subscription> subscriptionList;
