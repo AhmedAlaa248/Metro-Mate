@@ -11,7 +11,7 @@ Subscription::Subscription(int id, std::string type, std::string subDate, std::s
     user_idd = userId;
     sub_idd = subId;
 }
-Subscription::Subscription(int id, std::string type, std::string subDate, std::string endDate, int remainingRides, int userId, int subId, string sourceStation, string finalStation) {
+Subscription::Subscription(int id, std::string type, std::string subDate, std::string endDate, int remainingRides, int userId, int subId, string sourceStation, string finalStation,int pathh) {
     ID = id;
     Type = type;
     Sub_datee = subDate;
@@ -21,6 +21,7 @@ Subscription::Subscription(int id, std::string type, std::string subDate, std::s
     sub_idd = subId;
     source_station = sourceStation; // Assign the value to the new attribute
     final_station = finalStation; // Assign the value to the new attribute
+    path = pathh;
 }
 void Subscription::saveSubscriptionToDatabase() {
     sqlite3* db;
@@ -35,8 +36,8 @@ void Subscription::saveSubscriptionToDatabase() {
     }
 
     // SQL statement to insert subscription data
-    string sql = "INSERT INTO Subscription (Type, Sub_date, End_date, remaining_rides, user_idd, sub_idd, [SourceStation ], FinalStation) "
-        "VALUES ('" + Type + "', '" + Sub_datee + "', '" + End_datee + "', " + to_string(remaining_rides) + ", " + to_string(user_idd) + ", " + to_string(sub_idd) + ", '" + source_station + "', '" + final_station + "')";
+    string sql = "INSERT INTO Subscription (Type, Sub_date, End_date, remaining_rides, user_idd, sub_idd, [SourceStation ], FinalStation, ) "
+        "VALUES ('" + Type + "', '" + Sub_datee + "', '" + End_datee + "', " + to_string(remaining_rides) + ", " + to_string(user_idd) + ", " + to_string(sub_idd) + ", '" + source_station + "', '" + final_station + "', " + to_string(path) + "')";
 
     // Execute the SQL statement
     rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errorMessage);
@@ -89,9 +90,9 @@ vector<Subscription> Subscription::RetrieveSubscriptionFromDatabase()
         int sub_idd = sqlite3_column_int(stmt, 6);
         const char* source_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7)); // Assuming source station is at column 7
         const char* final_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)); // Assuming final station is at column 8
-
+        int path = sqlite3_column_int(stmt, 9)-1;
         // Creating Subscription objects and adding them to the vector
-        Subscription subscription(ID, Type, Sub_datee, End_datee, remaining_rides, user_idd, sub_idd, string(source_station), string(final_station));
+        Subscription subscription(ID, Type, Sub_datee, End_datee, remaining_rides, user_idd, sub_idd, string(source_station), string(final_station),path);
         subscriptionList.push_back(subscription);
     }
 
@@ -139,6 +140,7 @@ Subscription Subscription::getSubscriptionForUser(int userId) {
         subscription.sub_idd = sqlite3_column_int(stmt, 6);
         subscription.source_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
         subscription.final_station = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
+        subscription.path = sqlite3_column_int(stmt, 9)-1;
     }
 
     // Finalize statement and close database
@@ -165,7 +167,15 @@ int Subscription::stages()
     }
     return stageNumber;
 }
+vector <string> Subscription::stationofpath(vector<vector<string>>pathss, int pathchoice) {
+    vector<string>stationsofpath;
+    for (auto& stationss : pathss[pathchoice])
+    {
+        stationsofpath.push_back(stationss);
+    }
+    return stationsofpath;
 
+}
 void Subscription::printDetails()
 {
     switch (subPlan.getType())

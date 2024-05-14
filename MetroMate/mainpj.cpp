@@ -1,5 +1,5 @@
 #include <iostream>
-#include "User.h"
+#include "Validator.h"
 #include "Admin.h"
 #include "MetroSystem.cpp"
 using namespace std;
@@ -8,7 +8,7 @@ string username;
 bool infoupdate = false;
 
 void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users, vector <Ride>& ridee, vector <SubscriptionPlan>& plans, vector <Station>& stations) {
-
+	Validator va;
 
 	int choice;
 	cout << "Hello " + user.name + "\n";
@@ -19,6 +19,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 	switch (choice)
 	{
 	case 0:
+
 		break;
 	case 1:
 		cout << "Purchase.\n";
@@ -62,6 +63,8 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 			user.renewSub(user.subscription.ID, subs, user, plans);
 
 			break;
+		case 4:
+			break;
 		default:
 
 			cout << "Invalid choice.\n";
@@ -72,8 +75,9 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 3:
-		cout << "checked In.\n";
-
+		cout << "\t \t \t Checking In !\n";
+		
+		va.StationExist(stations, user,ridee);
 
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
@@ -162,6 +166,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 		cout << "Invalid choice.\n";
 		break;
 	}
+
 }
 
 
@@ -321,60 +326,60 @@ bool adminLogin()
 
 
 
-//int main() {
-//	string username;
-//	User user;
-//	Station station;
-//	SubscriptionPlan subplan;
-//	Ride ride;
-//	Subscription sub;
-//	vector<Subscription> subscriptions = sub.Subscriptions();
-//	vector<User> users = user.RetrieveUsersFromDatabase();
-//	vector<Station> stations = station.RetrieveStationsFromDatabase();
-//	vector<SubscriptionPlan> subplans= subplan.RetrieveSubplansFromDatabase();
-//	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
-//	Admin admin;
-//	cout << "welcome to fcis stations, glad to see you back!\n";
-//	int choice;
-//	while (true) {
-//		cout << "1- admin\n";
-//		cout << "2- user\n";
-//		cout << "3- exit\n";
-//		cout << "enter your choice: ";
-//		cin >> choice;
-//
-//		if (choice >= 1 && choice <= 3) {
-//
-//			break;
-//		}
-//		else {
-//			cout << "invalid choice. please enter a number between 1 and 3.\n";
-//			cin.clear();
-//			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-//		}
-//	}
-//
-//	switch (choice) {
-//	case 1:
-//
-//		adminLogin();
-//		adminMenu();
-//		break;
-//	case 2:
-//		usermenu(subscriptions, user, users, rides, subplans, stations);
-//		userfunctions(subscriptions, user, users, rides, subplans, stations);
-//
-//		break;
-//	case 3:
-//
-//		cout << "exiting...\n";
-//		break;
-//	default:
-//
-//		cout << "invalid choice.\n";
-//		break;
-//	}
-//
-//	return 0;
-//}
+int main() {
+	string username;
+	User user;
+	Station station;
+	SubscriptionPlan subplan;
+	Ride ride;
+	Subscription sub;
+	vector<Subscription> subscriptions = sub.Subscriptions();
+	vector<User> users = user.RetrieveUsersFromDatabase();
+	vector<Station> stations = station.RetrieveStationsFromDatabase();
+	vector<SubscriptionPlan> subplans= subplan.RetrieveSubplansFromDatabase();
+	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
+	Admin admin;
+	cout << "welcome to fcis stations, glad to see you back!\n";
+	int choice;
+	while (true) {
+		cout << "1- admin\n";
+		cout << "2- user\n";
+		cout << "3- exit\n";
+		cout << "enter your choice: ";
+		cin >> choice;
+
+		if (choice >= 1 && choice <= 3) {
+
+			break;
+		}
+		else {
+			cout << "invalid choice. please enter a number between 1 and 3.\n";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
+
+	switch (choice) {
+	case 1:
+
+		adminLogin();
+		adminMenu();
+		break;
+	case 2:
+		usermenu(subscriptions, user, users, rides, subplans, stations);
+		userfunctions(subscriptions, user, users, rides, subplans, stations);
+
+		break;
+	case 3:
+
+		cout << "exiting...\n";
+		break;
+	default:
+
+		cout << "invalid choice.\n";
+		break;
+	}
+
+	return 0;
+}
 

@@ -62,7 +62,7 @@ int Station::GetStationIdFromName(vector<Station> stations, string name) {
 			return station.getID();
 		}
 	}
-	return -1; // Return -1 if station name is not found
+	return -1; 
 }
 void Station::addToAdjacency(vector<Station>& stations) {
 
@@ -117,6 +117,14 @@ void Station::removeConnection(string station1, string station2) {
 }
 
 
+bool Station:: checkStringsInVector(string str1, string str2, vector<string> vec) {
+	// Check if the first string exists in the vector
+	bool foundStr1 = find(vec.begin(), vec.end(), str1) != vec.end();
+	// Check if the second string exists in the vector
+	bool foundStr2 = find(vec.begin(), vec.end(), str2) != vec.end();
+	// Return true only if both strings are found
+	return foundStr1 && foundStr2;
+}
 void Station::removeStation(string station) {
 	adjacencyList[station].clear();
 

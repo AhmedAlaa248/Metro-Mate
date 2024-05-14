@@ -19,6 +19,7 @@ public:
 	vector<Ride> ride;
 	int subId;
 	int rideId;
+
 	vector<User> users;
 
 
@@ -44,6 +45,7 @@ public:
 	void checkIn(string, string, vector <Ride>&, vector <Station>&, User&);
 	void viewRide(User& user);
 	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations);
+	
 
 };
 
