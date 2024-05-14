@@ -26,6 +26,6 @@ public:
     int stages();
     void saveSubscriptionToDatabase();
     void printDetails();
-    vector<Subscription>Subscriptions();
+    vector<Subscription>RetrieveSubscriptionFromDatabase();
     void static printsubdetails(Subscription&);
 };

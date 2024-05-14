@@ -124,6 +124,7 @@ void Admin::editUser(vector<User>& users) {
     }
 }
 
+
 void Admin::FareManagement(vector<SubscriptionPlan>& plans) {
 
 
@@ -475,16 +476,103 @@ void Admin::viewAllSubscriptionPlans(vector<SubscriptionPlan>& SubscriptionPlan)
 
 }
 
-void Admin::AddStation(string station)
-{
-    Station stations;
-    stations.addStation(station);
+
+void Admin::addStation(vector<Station>& allStations) {
+    string name;
+    string metroLine;
+    string linkedStations;
+    Station s;
+    int newStationID = allStations.size() + 1;
+
+    // Get input from admin for name and metro line
+    cout << "Enter station name: ";
+    cin >> name;
+    cout << "Enter metro line: ";
+    cin >> metroLine;
+
+
+    vector<string> neighbors;
+    char choice;
+    do {
+        string neighbor;
+        cout << "Enter neighboring station: ";
+        cin >> neighbor;
+        neighbors.push_back(neighbor);
+        cout << "Do you want to add another neighboring station? (y/n): ";
+        cin >> choice;
+    } while (choice == 'y' || choice == 'Y');
+
+    for (const string& neighborName : neighbors) {
+        for (auto& station : allStations) {
+            if (station.name == neighborName) {
+                linkedStations += to_string(station.id) + ",";
+                station.link += to_string(newStationID) + ",";
+                break;
+            }
+        }
+    }
+    for (const string& neighbor : neighbors) {
+        s.addConnection(name, neighbor);
+    }
+    Station newStation(newStationID, name, 0, 0, 0, metroLine, 0, linkedStations);
+    allStations.push_back(newStation);
+
+    cout << "Station Successfully added\n";
+
 }
 
-void Admin::deleteStation(string station)
+void Admin::deleteStation(vector<Station>& stations)
 {
-    Station stations;
-    stations.removeStation(station);
+    Admin::viewAllStations(stations);
+    bool stationFound = false;
+    while (!stationFound)
+    {
+        cout << "Enter the Station ID you want to delete" << endl;
+        int stId;
+        cin >> stId;
+
+        auto it = find_if(stations.begin(), stations.end(), [stId](const Station& s) {
+            return s.id == stId;
+            });
+
+        if (it != stations.end()) {
+            string deletedStationId = to_string(stId);
+            for (auto& station : stations) {
+                if (station.id != stId) {
+                    size_t pos = station.link.find(deletedStationId);
+                    if (pos != string::npos) {
+                        station.link.erase(pos, deletedStationId.length() + 1); 
+                    }
+                }
+            }
+
+            // Erase the station from the list
+            stations.erase(it);
+
+            cout << "Station deleted successfully." << endl;
+            stationFound = true;
+        }
+        else {
+            cout << "Station not found." << endl;
+        }
+    }
+}
+
+void Admin::viewAllStations(vector<Station> stations)
+{
+    for (auto& station : stations)
+    {
+        cout << "Station Details:" << endl;
+        cout << "ID: " << station.id << endl;
+        cout << "Name: " << station.name << endl;
+        cout << "income: " << station.totalIncome << endl;
+        cout << "Tickets: " << station.numOfSoldTickets << endl;
+        cout << "Number Of Passengers: " << station.numOfPassengers << endl;
+        cout << "Metro Line: " << station.lineNum << endl;
+        cout << "Subscriptions Number: " << station.numOfSubscriptions << endl;
+        cout << "connected Stations ID: " << station.link << endl;
+        cout << "----------------------------------------------------------------------\n";
+    }
 }
 
 void Admin::editStation(vector<Station>& stations)
@@ -550,17 +638,17 @@ void Admin::editStation(vector<Station>& stations)
 }
 
 
-//int main() {
-//    Station station;
-//    Admin admin;
-//    User user;
-//    SubscriptionPlan subs;
-//    vector<User> users= User::RetrieveUsersFromDatabase();
-//    vector<Station>stations = station.RetrieveStationsFromDatabase();
-//    vector<SubscriptionPlan> subplans = subs.RetrieveSubplansFromDatabase();
-//    bool infoUpdated = true;
-//
-//    admin.FareManagement(subplans);
-//    admin.viewAllSubscriptionPlans(subplans);
-//    subs.saveSubplanToDatabase(subplans);
-//}
+
+int main() {
+    Station station;
+    Admin admin;
+    User user;
+    SubscriptionPlan subs;
+    vector<User> users= User::RetrieveUsersFromDatabase();
+    vector<Station>stations = station.RetrieveStationsFromDatabase();
+    vector<SubscriptionPlan> subplans = subs.RetrieveSubplansFromDatabase();
+    
+    //admin.addStation(stations);
+  admin.deleteStation(stations);
+  station.saveStationToDatabase(stations);
+}

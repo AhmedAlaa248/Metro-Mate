@@ -37,7 +37,7 @@ public:
 	int FindLengthOfSpecificPath(int);
 	vector<Station> RetrieveStationsFromDatabase();
 	vector<vector<string>> findAllPaths(string, string);
-	void addStation(string station);
+	void addStation(vector<Station>& allStations);
 	void removeConnection(string, string);
 	void addConnection(string, string);
 	void dfs(string, string, vector<string>&, map<string, bool>&);

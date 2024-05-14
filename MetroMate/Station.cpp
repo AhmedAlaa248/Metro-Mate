@@ -10,6 +10,41 @@ Station::Station()
 {
 
 }
+Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link) {
+	id = idd;
+	name = namee;
+	totalIncome = inc;
+	numOfSoldTickets = tix;
+	numOfPassengers = passengers;
+	lineNum = line;
+	numOfSubscriptions = subscriptions;
+	this->link = link;
+
+}
+Station::Station(string n, int line)
+{
+//	id = nextId++;
+	name = n;
+	lineNum = line;
+	totalIncome = 0;
+	numOfSoldTickets = 0;
+	numOfSubscriptions = 0;
+	numOfPassengers = 0;
+}
+
+int Station::getID() const
+{
+	return id;
+}
+string Station::getName() const
+{
+	return name;
+}
+string Station::getLineNum() const
+{
+	return lineNum;
+}
+
 string Station::GetStationNameFromID(vector<Station>& stations, int id)
 {
 	for (const auto& station : stations)
@@ -29,8 +64,6 @@ int Station::GetStationIdFromName(vector<Station> stations, string name) {
 	}
 	return -1; // Return -1 if station name is not found
 }
-
-
 void Station::addToAdjacency(vector<Station>& stations) {
 
 	for (const auto& station : stations)
@@ -57,79 +90,32 @@ void Station::addToAdjacency(vector<Station>& stations) {
 
 
 }
-
-
-Station::Station(int idd, string namee, int inc, int tix, int passengers, string line, int subscriptions, string link) {
-	id = idd;
-	name = namee;
-	totalIncome = inc;
-	numOfSoldTickets = tix;
-	numOfPassengers = passengers;
-	lineNum = line;
-	numOfSubscriptions = subscriptions;
-	this->link = link;
-
-}
-
-Station::Station(string n, int line)
-{
-//	id = nextId++;
-	name = n;
-	lineNum = line;
-	totalIncome = 0;
-	numOfSoldTickets = 0;
-	numOfSubscriptions = 0;
-	numOfPassengers = 0;
-}
-
-int Station::getID() const
-{
-	return id;
-}
-
-string Station::getName() const
-{
-	return name;
-}
-
-string Station::getLineNum() const
-{
-	return lineNum;
-}
-
-
-
 void Station::addConnection(string station1, string station2) {
 	adjacencyList[station1].insert(station2);
 	adjacencyList[station2].insert(station1);
-}
 
+}
+//void Station::removeConnection(string station1, string station2) {
+//	if (adjacencyList.find(station1) != adjacencyList.end()) {
+//		adjacencyList[station1].erase(station2);
+//	}
+//	if (adjacencyList.find(station2) != adjacencyList.end()) {
+//		adjacencyList[station2].erase(station1);
+//	}
+//}
 
 void Station::removeConnection(string station1, string station2) {
-	if (adjacencyList.find(station1) != adjacencyList.end()) {
-		adjacencyList[station1].erase(station2);
+	auto it1 = adjacencyList.find(station1);
+	if (it1 != adjacencyList.end()) {
+		it1->second.erase(station2);
 	}
-	if (adjacencyList.find(station2) != adjacencyList.end()) {
-		adjacencyList[station2].erase(station1);
+
+	auto it2 = adjacencyList.find(station2);
+	if (it2 != adjacencyList.end()) {
+		it2->second.erase(station1);
 	}
 }
 
-void Station::addStation(string station) {
-	vector<string> neighbors;
-	char choice;
-	do {
-		string neighbor;
-		cout << "Enter neighboring station: ";
-		cin >> neighbor;
-		neighbors.push_back(neighbor);
-		cout << "Do you want to add another neighboring station? (y/n): ";
-		cin >> choice;
-	} while (choice == 'y' || choice == 'Y');
-
-	for (string neighbor : neighbors) {
-		addConnection(station, neighbor);
-	}
-}
 
 void Station::removeStation(string station) {
 	adjacencyList[station].clear();
@@ -161,6 +147,15 @@ void Station::dfs(string source, string destination, vector<string>& path, map<s
 	path.pop_back();
 }
 
+int Station::FindLengthOfSpecificPath(int index) {
+	if (index >= 0 && index < allPaths.size()) {
+		return allPaths[index].size();
+	}
+	else {
+		return -1; // Return -1 if the index is out of range
+	}
+
+}
 vector<vector<string>> Station::findAllPaths(string source, string destination) {
 	map<string, bool> visited;
 	vector<string> path;
@@ -216,16 +211,6 @@ vector<Station> Station::RetrieveStationsFromDatabase()
 	sqlite3_close(db);
 
 	return stations;
-}
-
-int Station::FindLengthOfSpecificPath(int index) {
-	if (index >= 0 && index < allPaths.size()) {
-		return allPaths[index].size();
-	}
-	else {
-		return -1; // Return -1 if the index is out of range
-	}
-
 }
 void Station::saveStationToDatabase(vector<Station>& stations)
 {
@@ -286,3 +271,4 @@ void Station::saveStationToDatabase(vector<Station>& stations)
 
 	sqlite3_close(db);
 }
+

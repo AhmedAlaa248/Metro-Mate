@@ -52,7 +52,7 @@ void Subscription::saveSubscriptionToDatabase() {
     sqlite3_close(db);
 }
 
-vector<Subscription> Subscription::Subscriptions()
+vector<Subscription> Subscription::RetrieveSubscriptionFromDatabase()
 {
     vector<Subscription> subscriptionList;
     sqlite3* db;

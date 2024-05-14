@@ -23,8 +23,7 @@ public:
     void StationManagement(vector <Station>&, vector<Subscription>&);
 
     // Station management
-    void addStation(Station station);
-    void deleteStation();
+    void addStation(vector<Station>& allStations);
 
     void addSubscriptionPlan(vector<SubscriptionPlan>& SubscriptionPlans);
 
@@ -34,9 +33,9 @@ public:
 
     void viewAllSubscriptionPlans(vector<SubscriptionPlan>& SubscriptionPlan);
 
-    void AddStation(string station);
-    void deleteStation(string station);
+    void deleteStation(vector<Station>& stations);
     void editStation(vector<Station>& stations);
+    void viewAllStations(vector<Station> stations);
 
     static void saveStationToDatabase(vector<Station>& Stations);
 

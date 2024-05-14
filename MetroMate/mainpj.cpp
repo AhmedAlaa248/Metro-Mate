@@ -137,7 +137,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 	switch (choice) {
 	case 1:
 		cout << "Login selected.\n";
-		user = user.Looogin(users, login);
+		user = user.Login(users, login);
 		cout << user.id << " " << user.userName << endl << user.subscription.final_station << "  " << user.ride[0].id;
 		if (login) {
 		userfunctions(subs, user, users, ridee, plans, stations);
@@ -321,60 +321,60 @@ bool adminLogin()
 
 
 
-int main() {
-	string username;
-	User user;
-	Station station;
-	SubscriptionPlan subplan;
-	Ride ride;
-	Subscription sub;
-	vector<Subscription> subscriptions = sub.Subscriptions();
-	vector<User> users = user.RetrieveUsersFromDatabase();
-	vector<Station> stations = station.RetrieveStationsFromDatabase();
-	vector<SubscriptionPlan> subplans= subplan.RetrieveSubplansFromDatabase();
-	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
-	Admin admin;
-	cout << "welcome to fcis stations, glad to see you back!\n";
-	int choice;
-	while (true) {
-		cout << "1- admin\n";
-		cout << "2- user\n";
-		cout << "3- exit\n";
-		cout << "enter your choice: ";
-		cin >> choice;
-
-		if (choice >= 1 && choice <= 3) {
-
-			break;
-		}
-		else {
-			cout << "invalid choice. please enter a number between 1 and 3.\n";
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		}
-	}
-
-	switch (choice) {
-	case 1:
-
-		adminLogin();
-		adminMenu();
-		break;
-	case 2:
-		usermenu(subscriptions, user, users, rides, subplans, stations);
-		userfunctions(subscriptions, user, users, rides, subplans, stations);
-
-		break;
-	case 3:
-
-		cout << "exiting...\n";
-		break;
-	default:
-
-		cout << "invalid choice.\n";
-		break;
-	}
-
-	return 0;
-}
+//int main() {
+//	string username;
+//	User user;
+//	Station station;
+//	SubscriptionPlan subplan;
+//	Ride ride;
+//	Subscription sub;
+//	vector<Subscription> subscriptions = sub.Subscriptions();
+//	vector<User> users = user.RetrieveUsersFromDatabase();
+//	vector<Station> stations = station.RetrieveStationsFromDatabase();
+//	vector<SubscriptionPlan> subplans= subplan.RetrieveSubplansFromDatabase();
+//	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
+//	Admin admin;
+//	cout << "welcome to fcis stations, glad to see you back!\n";
+//	int choice;
+//	while (true) {
+//		cout << "1- admin\n";
+//		cout << "2- user\n";
+//		cout << "3- exit\n";
+//		cout << "enter your choice: ";
+//		cin >> choice;
+//
+//		if (choice >= 1 && choice <= 3) {
+//
+//			break;
+//		}
+//		else {
+//			cout << "invalid choice. please enter a number between 1 and 3.\n";
+//			cin.clear();
+//			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+//		}
+//	}
+//
+//	switch (choice) {
+//	case 1:
+//
+//		adminLogin();
+//		adminMenu();
+//		break;
+//	case 2:
+//		usermenu(subscriptions, user, users, rides, subplans, stations);
+//		userfunctions(subscriptions, user, users, rides, subplans, stations);
+//
+//		break;
+//	case 3:
+//
+//		cout << "exiting...\n";
+//		break;
+//	default:
+//
+//		cout << "invalid choice.\n";
+//		break;
+//	}
+//
+//	return 0;
+//}
 

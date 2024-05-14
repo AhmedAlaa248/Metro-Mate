@@ -97,101 +97,99 @@ void User::Register(vector<User>& users)
 	users.push_back(user);
 }
 void User::updateInfo(vector<User>& users) {
-	
 	bool goodPassword = false;
 	int choice;
-	bool o = true;
-	string signedInUsername = Login(users);
-	Validator validator;
-
+	bool q = false;
 	int signedInUserIndex = -1;
+	
+	cout << "Login Again to change Your info\n";
+	User signedInUser = Login(users, q); // Get the signed in user
+
+
 	for (size_t i = 0; i < users.size(); ++i) {
-		if (users[i].userName == signedInUsername) {
+		if (users[i].userName == signedInUser.userName) {
 			signedInUserIndex = i;
 			break;
 		}
 	}
-	
-		cout << "Choose what you want to change:\n"
-			<< "1. Change Name\n"
-			<< "2. Change Email\n"
-			<< "3. Change Password\n"
-			<< "4. Change Username\n"
-			<< "Enter your choice: ";
-		cin >> choice;
-		cin.ignore();
 
-		switch (choice) {
-		case 1: {
-			cout << "Enter new name: ";
-			getline(cin, users[signedInUserIndex].name);
-			break;
-		}
-		case 2: {
-			while (true)
-			{
-				cout << "Enter your new email:\n";
-				cin >> users[signedInUserIndex].email;
+	Validator validator;
 
-				if (validator.isValidEmailAddress(users[signedInUserIndex].email))
-				{
-					break;
-				}
-				else
-				{
-					cout << "Invalid email, please try again\n";
-				}
-			}
-			break;
-		}
-		case 3: {
-			while (true)
-			{
-				cout << "Enter your new password:\n";
-				cin >> users[signedInUserIndex].password;
+	cout << "Choose what you want to change:\n"
+		<< "1. Change Name\n"
+		<< "2. Change Email\n"
+		<< "3. Change Password\n"
+		<< "4. Change Username\n"
+		<< "Enter your choice: ";
+	cin >> choice;
+	cin.ignore();
 
-				cout << "Confirm your password:\n";
-				string confirmPassword;
-				cin >> confirmPassword;
+	switch (choice) {
+	case 1: {
+		cout << "Enter new name: ";
+		getline(cin, signedInUser.name);
+		break;
+	}
+	case 2: {
+		while (true) {
+			cout << "Enter your new email:\n";
+			cin >> signedInUser.email;
 
-				if (users[signedInUserIndex].password != confirmPassword)
-				{
-					cout << "Passwords do not match!\n";
-					continue;
-				}
-
-				if (!validator.isStrongPassword(users[signedInUserIndex].password))
-				{
-					cout << "Password is weak. Please choose a stronger one.\n";
-					continue;
-				}
-
-				goodPassword = true;
+			if (validator.isValidEmailAddress(signedInUser.email)) {
 				break;
 			}
-			break;
-		}
-		case 4: {
-			string newUsername;
-			while (true)
-			{
-				cout << "Enter your user name:\n";
-				getline(cin, users[signedInUserIndex].userName);
-
-				if (!validator.UsedUserName(users[signedInUserIndex].userName))
-				{
-					break;
-				}
-				else
-				{
-					cout << "Already taken username, please try again\n";
-				}
+			else {
+				cout << "Invalid email, please try again\n";
 			}
 		}
-		default:
+		break;
+	}
+	case 3: {
+		while (true) {
+			cout << "Enter your new password:\n";
+			cin >> signedInUser.password;
+
+			cout << "Confirm your password:\n";
+			string confirmPassword;
+			cin >> confirmPassword;
+
+			if (signedInUser.password != confirmPassword) {
+				cout << "Passwords do not match!\n";
+				continue;
+			}
+
+			if (!validator.isStrongPassword(signedInUser.password)) {
+				cout << "Password is weak. Please choose a stronger one.\n";
+				continue;
+			}
+
+			goodPassword = true;
 			break;
 		}
-		
+		break;
+	}
+	case 4: {
+		string newUsername;
+		while (true) {
+			cout << "Enter your user name:\n";
+			getline(cin, signedInUser.userName);
+
+			if (!validator.UsedUserName(signedInUser.userName)) {
+				break;
+			}
+			else {
+				cout << "Already taken username, please try again\n";
+			}
+		}
+	}
+	default:
+		break;
+	}
+
+	// Update the corresponding user in the users vector with the modified signedInUser
+	if (signedInUserIndex != -1) {
+		users[signedInUserIndex] = signedInUser;
+	}
 }
 tm User::addDaysToDate(const tm& date, int daysToAdd) {
 	// Convert the input date to a time_t
@@ -206,60 +204,7 @@ tm User::addDaysToDate(const tm& date, int daysToAdd) {
 
 	return newDate;
 }
-string User::Login(vector<User> users) {
-	Validator validator;
-
-	int maxAttempts = 3; // Maximum number of login attempts allowed
-	int attempts = 0; // Current number of login attempts
-
-	string userName;
-	string password;
-
-	while (attempts < maxAttempts) {
-		bool validUsername = false;
-		bool validPassword = false;
-
-		cout << "Enter username: ";
-		cin >> userName;
-
-		for (const auto& user : users) {
-			if (user.userName == userName) {
-				validUsername = true;
-				break;
-			}
-		}
-
-		if (!validUsername) {
-			cout << "Username not correct. Please try again.\n";
-			++attempts;
-			continue; // Skip password input if username is incorrect
-		}
-
-		cout << "Enter password: ";
-		cin >> password;
-
-		for (const auto& user : users) {
-			if (user.userName == userName && user.password == password) {
-				validPassword = true;
-				break;
-			}
-		}
-
-		if (!validPassword) {
-			cout << "Wrong Password. Please try again.\n";
-			++attempts;
-		}
-		else {
-			cout << "Login successful\n";
-			return userName;
-		}
-	}
-
-	// If max attempts reached without successful login, inform user and return empty string
-	cout << "Maximum login attempts reached. Exiting.\n";
-	return "";
-}
-User User::Looogin(vector<User> users, bool& q) {
+User User::Login(vector<User> users, bool& q) {
 	Validator validator;
 	Ride Rides;
 	Subscription Subs;
@@ -910,14 +855,10 @@ void User::viewRide(User& user) {
 //{
 //	User user;
 //	vector<User> userList = user.RetrieveUsersFromDatabase();
-//	//user.Register(userList, infoUpdated);
-//	user.Login(userList);
-//	//user.updateInfo(userList,infoUpdated);
+//	bool signedin = true;
+//	user.updateInfo(userList);
+//	user.saveUsersToDatabase(userList);
 //	
-//	//user.saveUsersToDatabase(userList);
-//
-//	
-//
 //}
 
 
