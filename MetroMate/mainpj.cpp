@@ -20,12 +20,15 @@ vector<Ride> rides = ride.RetrieveRidesFromDatabase();
 
 void saveAlltoDataBase(vector <Subscription>& subs, vector <User>& users, vector <Ride>& rides, vector <SubscriptionPlan>& plans, vector <Station>& stations)
 {
-	sub.saveSubscriptionToDatabase(subs);
+	sub.saveSubscriptionsToDatabase(subs);
 	user.saveUsersToDatabase(users);
 	ride.saveRideToDatabase(rides);
 	subplan.saveSubplanToDatabase(subplans);
 	station.saveStationToDatabase(stations);
 }
+
+
+
 void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users, vector <Ride>& ridee, vector <SubscriptionPlan>& plans, vector <Station>& stations) {
 	Validator va;
 	int srcid, dstid; string src, dst;
@@ -190,6 +193,8 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 		cout << "Invalid choice.\n";
 		break;
 	}
+	saveAlltoDataBase(subscriptions, users, rides, subplans, stations);
+
 
 }
 int adminMenu()
@@ -216,6 +221,7 @@ int adminMenu()
 			loggedIn = false;
 			break;
 		case 1:
+			cout << "------------------\n";
 			while (true) {
 				cout << "1. Edit user\n2. Delete user\n3. View user details\n4. View all users\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
@@ -226,15 +232,19 @@ int adminMenu()
 				{
 				case 1:
 					admin.editUser(users);
+					cout << "-----------------------------------\n";
 					break;
 				case 2:
 					admin.deleteUser(users);
+					cout << "-----------------------------------\n";
 					break;
 				case 3:
 					admin.viewUser(users);
+					cout << "-----------------------------------\n";
 					break;
 				case 4:
 					admin.viewAllUsers(users);
+					cout << "-----------------------------------\n";
 					break;
 				default:
 					cout << "Invalid choice\n";
@@ -244,8 +254,9 @@ int adminMenu()
 			cout << "\n";
 			break;
 		case 2:
+			cout << "------------------\n";
 			while (true) {
-				cout << "1. Add station\n2. Edit station\n3. Delete station\n4. View station details\n5. View all stations\n";
+				cout << "1. Add station\n2. Edit station\n3. Delete station\n4. View station details\n5. View all stations\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -254,18 +265,23 @@ int adminMenu()
 				{
 				case 1:
 					admin.addStation(stations);
+					cout << "-----------------------------------\n";
 					break;
 				case 2:
 					admin.editStation(stations);
+					cout << "-----------------------------------\n";
 					break;
 				case 3:
 					admin.deleteStation(stations);
+					cout << "-----------------------------------\n";
 					break;
 				case 4:
 					admin.viewStation(stations);
+					cout << "-----------------------------------\n";
 					break;
 				case 5:
 					admin.viewAllStations(stations);
+					cout << "-----------------------------------\n";
 					break;
 				default:
 					cout << "Invalid choice\n";
@@ -276,8 +292,9 @@ int adminMenu()
 			break;
 
 		case 3:
+			cout << "------------------\n";
 			while (true) {
-				cout << "1. Add subscription\n2. Edit subscription\n3. Delete subscription\n4. View all subscriptions\n";
+				cout << "1. Add subscription\n2. Edit subscription\n3. Delete subscription\n4. View all subscriptions\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -286,15 +303,19 @@ int adminMenu()
 				{
 				case 1:
 					admin.addSubscriptionPlan(Subplans);
+					cout << "-----------------------------------\n";
 					break;
 				case 2:
 					admin.editSubscriptionPlan(Subplans);
+					cout << "-----------------------------------\n";
 					break;
 				case 3:
 					admin.deleteSubscriptionPlan(Subplans);
+					cout << "-----------------------------------\n";
 					break;
 				case 4:
 					admin.viewAllSubscriptionPlans(Subplans);
+					cout << "-----------------------------------\n";
 					break;
 				default:
 					cout << "Invalid choice\n";
@@ -305,9 +326,9 @@ int adminMenu()
 			break;
 
 		case 4:
-			while (true) 
-			{
-				cout << "1. View specific users details.\n2. View all rides.\n";
+			cout << "------------------\n";
+			while (true) {
+				cout << "1. View specific ride detail.\n2. View all rides.\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -316,10 +337,11 @@ int adminMenu()
 				{
 				case 1:
 					admin.viewUser(users);
+					cout << "-----------------------------------\n";
 					break;
-
 				case 2:
 					admin.viewAllRideLogs(rides);
+					cout << "-----------------------------------\n";
 					break;
 				default:
 					cout << "Invalid choice\n";
@@ -329,6 +351,7 @@ int adminMenu()
 			cout << "\n";
 			break;
 		case 5:
+			cout << "------------------\n";
 			while (true) {
 				cout << "1. Manage fare\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
@@ -339,6 +362,7 @@ int adminMenu()
 				{
 				case 1:
 					admin.FareManagement(Subplans);
+					cout << "-----------------------------------\n";
 					break;
 				default:
 					cout << "Invalid choice\n";
@@ -346,15 +370,13 @@ int adminMenu()
 				}
 			}
 		}
-		
 	}
 	saveAlltoDataBase(subscriptions, users, rides, subplans, stations);
+
 	return choice;
+
+
 }
-
-
-
-
 void adminLogin() {
 	string username;
 	string password;
@@ -377,47 +399,47 @@ void adminLogin() {
 		}
 	}
 }
-int main() {
-	string username;
-
-	cout << "welcome to fcis stations, glad to see you back!\n";
-	int choice;
-	while (true) {
-		cout << "1- admin\n";
-		cout << "2- user\n";
-		cout << "3- exit\n";
-		cout << "enter your choice: ";
-		cin >> choice;
-
-		if (choice >= 1 && choice <= 3) {
-
-			break;
-		}
-		else {
-			cout << "invalid choice. please enter a number between 1 and 3.\n";
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		}
-	}
-
-	switch (choice) {
-	case 1:
-		adminLogin();
-		break;
-	case 2:
-		usermenu(subscriptions, user, users, rides, subplans, stations);
-		userfunctions(subscriptions, user, users, rides, subplans, stations);
-
-		break;
-	case 3:
-
-		cout << "exiting...\n";
-		break;
-	default:
-
-		cout << "invalid choice.\n";
-		break;
-	}
-	saveAlltoDataBase(subscriptions, users, rides, subplans, stations);
-}
+//int main() {
+//	string username;
+//
+//	cout << "welcome to fcis stations, glad to see you back!\n";
+//	int choice;
+//	while (true) {
+//		cout << "1- admin\n";
+//		cout << "2- user\n";
+//		cout << "3- exit\n";
+//		cout << "enter your choice: ";
+//		cin >> choice;
+//
+//		if (choice >= 1 && choice <= 3) {
+//
+//			break;
+//		}
+//		else {
+//			cout << "invalid choice. please enter a number between 1 and 3.\n";
+//			cin.clear();
+//			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+//		}
+//	}
+//
+//	switch (choice) {
+//	case 1:
+//		adminLogin();
+//		break;
+//	case 2:
+//		usermenu(subscriptions, user, users, rides, subplans, stations);
+//		userfunctions(subscriptions, user, users, rides, subplans, stations);
+//
+//		break;
+//	case 3:
+//
+//		cout << "exiting...\n";
+//		break;
+//	default:
+//
+//		cout << "invalid choice.\n";
+//		break;
+//	}
+//
+//}
 
