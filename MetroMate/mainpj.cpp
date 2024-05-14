@@ -12,7 +12,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 
 	int choice;
 	cout << "Hello " + user.name + "\n";
-	cout << "1. Purchase subscription.\n2. Manage subscription.\n3. Check in.\n4. Check out.\n5. View ride history.\n6. Update info.\n0. Log out\n";
+	cout << "1. Purchase subscription.\n2. Manage subscription.\n3. Check in.\n4. View ride history.\n5. Update info.\n0. Log out\n";
 	cout << "Choose your choice:\n";
 
 	cin >> choice;
@@ -22,7 +22,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 
 		break;
 	case 1:
-		cout << "Purchase.\n";
+		cout << "Purchase Sub\n";
 		user.purchaseSub(subs, user, stations);
 
 
@@ -76,30 +76,20 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 		break;
 	case 3:
 		cout << "\t \t \t Checking In !\n";
-		
 		va.StationExist(stations, user,ridee);
-
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 4:
-		cout << "Checked out.\n";
-
+		cout << "Rides history.\n";
+		user.viewRide(user);
+		
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 5:
-		cout << "Rides history.\n";
-		user.viewRide(user);
-
-
-		cout << endl;
-		cout << "Reffered to Main menu ! \n";
-		userfunctions(subs, user, users, ridee, plans, stations);
-		break;
-	case 6:
 		cout << "info updated.\n";
 		//       user.updateInfo(user, infoupdate);
 
@@ -128,7 +118,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 		cin >> choice;
 		if (choice >= 1 && choice <= 3) {
 
-			break;
+		break;
 		}
 		else {
 			cout << "Invalid choice. Please enter a number between 1 and 3.\n";
@@ -156,6 +146,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 
 		cout << "Register selected.\n";
 		user.Register(users);
+		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 3:
 
@@ -363,7 +354,7 @@ int main() {
 	case 1:
 
 		adminLogin();
-		adminMenu();
+		
 		break;
 	case 2:
 		usermenu(subscriptions, user, users, rides, subplans, stations);
