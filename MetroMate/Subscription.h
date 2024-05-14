@@ -15,14 +15,16 @@ public:
     int user_idd;
     int sub_idd;
     int stageNumber;
+    int path;
     string source_station; // New field
     string final_station; // New field
     SubscriptionPlan subPlan;
-
     Subscription();
     Subscription(int id, std::string type, std::string subDate, std::string endDate, int remainingRides, int userId, int subId);
-    Subscription(int, string, string, string, int, int, int, string, string);
+    Subscription(int, string, string, string, int, int, int, string, string,int);
     Subscription getSubscriptionForUser(int);
+    vector <string> stationofpath(vector<vector<string>>, int);
+    vector<string>pathchoices;
     int stages();
     void saveSubscriptionToDatabase();
     void printDetails();

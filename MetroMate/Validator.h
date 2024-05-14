@@ -17,5 +17,6 @@ public:
 	bool isValidEmailAddress(string& email);
 	bool UsedUserName(string username);
 	bool ExistingPassword(string password, string username);
+	bool StationExist(vector <Station> &,User&,vector<Ride> & );
 };
 

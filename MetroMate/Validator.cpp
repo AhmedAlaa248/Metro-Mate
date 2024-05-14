@@ -87,4 +87,30 @@ bool Validator::isValidEmailAddress(string& email)
 	return regex_match(email, pattern);
 
 }
+bool Validator::StationExist(vector <Station>& stations,User &user,vector<Ride>&ridee) {
+
+
+
+	for (auto& station : stations) {
+		cout << "ID : " << station.getID() << "  ->  " << station.getName() << endl;
+	}
+	int srcid, dstid; string src, dst; Station st;
+	cout << "Enter Your Source Station ID :) \n";
+	cin >> srcid;
+	cout << "Enter Your Destiantion Station ID :) \n";
+	cin >> dstid;
+	src = st.GetStationNameFromID(stations, srcid);
+	dst = st.GetStationNameFromID(stations, dstid);
+	bool flag = st.checkStringsInVector(src, dst, user.subscription.pathchoices);
+	if (flag) {
+		user.checkIn(src, dst, ridee, stations, user);
+		return true;
+	}
+	else {
+		cout << "Stations Selected Not Allowed for your Subscription ! \n";
+		return false;
+	}
+
+
+}
 

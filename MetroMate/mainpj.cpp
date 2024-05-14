@@ -1,5 +1,5 @@
 #include <iostream>
-#include "User.h"
+#include "Validator.h"
 #include "Admin.h"
 #include "MetroSystem.cpp"
 using namespace std;
@@ -8,7 +8,7 @@ string username;
 bool infoupdate = false;
 
 void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users, vector <Ride>& ridee, vector <SubscriptionPlan>& plans, vector <Station>& stations) {
-
+	Validator va;
 
 	int choice;
 	cout << "Hello " + user.name + "\n";
@@ -19,6 +19,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 	switch (choice)
 	{
 	case 0:
+
 		break;
 	case 1:
 		cout << "Purchase.\n";
@@ -62,6 +63,8 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 			user.renewSub(user.subscription.ID, subs, user, plans);
 
 			break;
+		case 4:
+			break;
 		default:
 
 			cout << "Invalid choice.\n";
@@ -72,8 +75,9 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 3:
-		cout << "checked In.\n";
-
+		cout << "\t \t \t Checking In !\n";
+		
+		va.StationExist(stations, user,ridee);
 
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
@@ -138,7 +142,6 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 	case 1:
 		cout << "Login selected.\n";
 		user = user.Looogin(users, login);
-		cout << user.id << " " << user.userName << endl << user.subscription.final_station << "  " << user.ride[0].id;
 		if (login) {
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
@@ -162,6 +165,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 		cout << "Invalid choice.\n";
 		break;
 	}
+
 }
 
 
@@ -334,7 +338,7 @@ int main() {
 	vector<SubscriptionPlan> subplans= subplan.RetrieveSubplansFromDatabase();
 	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
 	Admin admin;
-	cout << "welcome to fcis stations, glad to see you back!\n";
+	cout << "----------Welcome to Fcis MetroSystem, Glad to See You !----------\n";
 	int choice;
 	while (true) {
 		cout << "1- admin\n";
@@ -363,7 +367,6 @@ int main() {
 	case 2:
 		usermenu(subscriptions, user, users, rides, subplans, stations);
 		userfunctions(subscriptions, user, users, rides, subplans, stations);
-
 		break;
 	case 3:
 

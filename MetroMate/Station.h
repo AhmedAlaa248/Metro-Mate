@@ -45,5 +45,6 @@ public:
 	void addToAdjacency(vector<Station>& stations);
 	int GetStationIdFromName(vector<Station>, string name);
 	void saveStationToDatabase(vector<Station>& stations);
+	bool checkStringsInVector(string, string, vector<string>);
 };
 

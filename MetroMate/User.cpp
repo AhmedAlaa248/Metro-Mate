@@ -308,6 +308,11 @@ User User::Looogin(vector<User> users, bool& q) {
 					User founduser(user.id, user.name, user.email, user.password, user.balance, user.subId, user.rideId, user.userName);
 					founduser.ride = Rides.GetRidesForUser(founduser.id);
 					founduser.subscription = Subs.getSubscriptionForUser(founduser.id);
+					Station test;
+					vector <Station> stationss = test.RetrieveStationsFromDatabase();
+					test.addToAdjacency(stationss);	
+					vector<vector<string>> allPaths = test.findAllPaths(founduser.subscription.source_station,founduser.subscription.final_station);
+					founduser.subscription.pathchoices = Subs.stationofpath(allPaths, founduser.subscription.path);
 					return founduser;
 					break;
 				}
@@ -398,8 +403,8 @@ vector<User> User::RetrieveUsersFromDatabase()
 	{
 		// Error opening the database
 		cout << "Error opening the database: " << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db); 
-		return userList;   
+		sqlite3_close(db);
+		return userList;
 	}
 
 
@@ -429,8 +434,8 @@ vector<User> User::RetrieveUsersFromDatabase()
 		int subId = sqlite3_column_int(stmt, 5);
 		int rideId = sqlite3_column_int(stmt, 6);
 		const char* userName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
-	
-		userList.push_back(User(id, name, email,password, balance, subId,rideId,userName));
+
+		userList.push_back(User(id, name, email, password, balance, subId, rideId, userName));
 		//userList.push_back(User(id));
 	}
 	sqlite3_finalize(stmt);
@@ -438,6 +443,9 @@ vector<User> User::RetrieveUsersFromDatabase()
 
 	return userList;
 }
+
+	
+
 Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Station>& stationss) {
 	vector<SubscriptionPlan> plans = SubscriptionPlan::RetrieveSubplansFromDatabase();
 	Station test;
@@ -522,11 +530,12 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 	}
 	int pathchoice;
 	int length;
-
+	vector <string> pathsss;
 	while (true) {
 		cin >> pathchoice;
 		if (pathchoice > 0 && pathchoice <= allPaths.size()) {
 			length = test.FindLengthOfSpecificPath(pathchoice - 1);
+			 pathsss = subscription.stationofpath(allPaths, pathchoice - 1);
 			break;
 		}
 		else {
@@ -622,10 +631,11 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 
 
 	int sub_id = z.size() + 1;
-	Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst);
+	Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst,pathchoice-1);
 	z.push_back(s);
 	user.subId = sub_id;
 	user.subscription = s;
+	user.subscription.pathchoices = pathsss;
 	return s;
 }
 void User::renewSub(int subscid, vector <Subscription>& z, User& o, vector <SubscriptionPlan> plans) {
@@ -880,6 +890,7 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			}
 		}
 	}
+	cout << "Have A Nice Dayy \n";
 }
 Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& user, vector<Station> stations)
 {
@@ -905,6 +916,11 @@ void User::viewRide(User& user) {
 
 
 }
+
+
+
+
+
 
 //int main()
 //{
