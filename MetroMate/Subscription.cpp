@@ -101,7 +101,6 @@ vector<Subscription> Subscription::RetrieveSubscriptionFromDatabase()
 
     return subscriptionList;
 }
-
 Subscription Subscription::getSubscriptionForUser(int userId) {
     Subscription subscription;
 
@@ -149,7 +148,6 @@ Subscription Subscription::getSubscriptionForUser(int userId) {
 
     return subscription;
 }
-
 int Subscription::stages()
 {
     int numOfStations = subPlan.getNumStations();
@@ -261,22 +259,17 @@ void Subscription::printDetails()
     }
 
 }
-
 void Subscription::printsubdetails(Subscription& z) {
     cout << "Subscription ID: " << z.ID << endl;
     cout << "User ID: " << z.user_idd << endl;
     cout << "Type: " << z.Type << endl;
     cout << "Subscription Date: " << z.Sub_datee << endl;
-    cout << "End Date: " << z.End_datee << endl;
-    cout << "Remaining Rides: " << z.remaining_rides << endl;
-    cout << "Source Station: " << z.source_station << endl;
-    cout << "Final Station: " << z.final_station << endl;
+    if (z.Type != "Cash Wallet Cards") {
+        cout << "End Date: " << z.End_datee << endl;
+        cout << "Remaining Rides: " << z.remaining_rides << endl;
+        cout << "Source Station: " << z.source_station << endl;
+        cout << "Final Station: " << z.final_station << endl;
+    }
 
 
 }
-//int main()
-//{
-//
-//    Subscription sub;
-//    sub.printDetails();
-//}

@@ -11,7 +11,7 @@ Ride::Ride()
 {
 }
 
-Ride::Ride(int rideId, string src, string dest, int stationId, string date, int usr_id)
+Ride::Ride(int rideId, string src, string dest, int stationId, string date, int usr_id, int faree)
 {
 	id = rideId;
 	source = src;
@@ -19,6 +19,7 @@ Ride::Ride(int rideId, string src, string dest, int stationId, string date, int 
 	this->stationId = stationId;
 	ridedate = date;
 	user_id = usr_id;
+	fare = faree;
 
 }
 vector<Ride> Ride::RetrieveRidesFromDatabase() {
@@ -54,7 +55,8 @@ vector<Ride> Ride::RetrieveRidesFromDatabase() {
 		int station_id = sqlite3_column_int(stmt, 3);
 		const char* datee = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
 		int user_id = sqlite3_column_int(stmt, 5);
-		Ride ride(ride_id, source, destination, station_id, datee, user_id);
+		int fare = sqlite3_column_int(stmt, 6);
+		Ride ride(ride_id, source, destination, station_id, datee, user_id, fare);
 		rides.push_back(ride);
 	}
 
@@ -63,7 +65,7 @@ vector<Ride> Ride::RetrieveRidesFromDatabase() {
 
 	return rides;
 }
-void Ride:: saveRideToDatabase(vector<Ride>& rides)
+void Ride::saveRideToDatabase(vector<Ride>& rides)
 {
 
 
@@ -87,7 +89,7 @@ void Ride:: saveRideToDatabase(vector<Ride>& rides)
 	}
 
 	// SQL query to insert a new record
-	const char* insert_sql = "INSERT INTO Rides (Ride_Id, source, destination, station_id, ride_date, User_id) VALUES (?, ?, ?, ?, ?, ?)";
+	const char* insert_sql = "INSERT INTO Rides (Ride_Id, source, destination, station_id, ride_date, User_id, Fare) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 	for (const auto& ride : rides) {
 		sqlite3_stmt* stmt;
@@ -101,13 +103,13 @@ void Ride:: saveRideToDatabase(vector<Ride>& rides)
 
 		// Bind parameters to the prepared statement
 		sqlite3_bind_int(stmt, 1, ride.id);
-		sqlite3_bind_text(stmt, 2,ride.source.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, ride.source.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 3, ride.destination.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_int(stmt, 4, ride.stationId);
 		sqlite3_bind_text(stmt, 5, ride.ridedate.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_int(stmt, 6, ride.user_id);
+		sqlite3_bind_int(stmt, 7, ride.fare);
 
-	
 
 		// Execute the SQL statement
 		rc = sqlite3_step(stmt);
@@ -124,69 +126,54 @@ void Ride:: saveRideToDatabase(vector<Ride>& rides)
 }
 
 
- vector<Ride> Ride:: GetRidesForUser(int user_id) {
-	 std::vector<Ride> user_rides;
+vector<Ride> Ride::GetRidesForUser(int user_id) {
+	std::vector<Ride> user_rides;
 
-	 sqlite3* db;
-	 int rc = sqlite3_open("mydb_1_1.db", &db);
+	sqlite3* db;
+	int rc = sqlite3_open("mydb_1_1.db", &db);
 
-	 if (rc != SQLITE_OK) {
-		 std::cerr << "Error opening the database: " << sqlite3_errmsg(db) << std::endl;
-		 sqlite3_close(db);
-		 return user_rides; 
-	 }
+	if (rc != SQLITE_OK) {
+		std::cerr << "Error opening the database: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return user_rides;
+	}
 
-	 const char* sql = "SELECT * FROM Rides WHERE User_id = ?";
+	const char* sql = "SELECT * FROM Rides WHERE User_id = ?";
 
-	 sqlite3_stmt* stmt;
-	 rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+	sqlite3_stmt* stmt;
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
-	 if (rc != SQLITE_OK) {
-		 std::cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << std::endl;
-		 sqlite3_close(db);
-		 return user_rides; 
-	 }
+	if (rc != SQLITE_OK) {
+		std::cerr << "Error preparing the SQL statement: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return user_rides;
+	}
 
 
-	 rc = sqlite3_bind_int(stmt, 1, user_id);
-	 if (rc != SQLITE_OK) {
-		 std::cerr << "Error binding parameter: " << sqlite3_errmsg(db) << std::endl;
-		 sqlite3_finalize(stmt);
-		 sqlite3_close(db);
-		 return user_rides; 
-	 }
+	rc = sqlite3_bind_int(stmt, 1, user_id);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Error binding parameter: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return user_rides;
+	}
 
-	
-	 while (sqlite3_step(stmt) == SQLITE_ROW) {
-		 Ride ride;
-		 ride.id = sqlite3_column_int(stmt, 0);
-		 ride.source = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-		 ride.destination = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-		 ride.stationId = sqlite3_column_int(stmt, 3);
-		 ride.ridedate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
-		 ride.user_id = sqlite3_column_int(stmt, 5);
-		 user_rides.push_back(ride);
-	 }
 
-	 
-	 sqlite3_finalize(stmt);
-	 sqlite3_close(db);
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		Ride ride;
+		ride.id = sqlite3_column_int(stmt, 0);
+		ride.source = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		ride.destination = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+		ride.stationId = sqlite3_column_int(stmt, 3);
+		ride.ridedate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+		ride.user_id = sqlite3_column_int(stmt, 5);
+		ride.fare = sqlite3_column_int(stmt, 6);
+		user_rides.push_back(ride);
+	}
 
-	 return user_rides;
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	return user_rides;
 }
-
-//int main()
-//{
-//	Ride ride;
-//	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
-//	for (const auto& ride : rides) {
-//		std::cout << "Ride ID: " << ride.id << std::endl;
-//		std::cout << "Source: " << ride.source<< std::endl;
-//		std::cout << "Destination: " << ride.destination<< std::endl;
-//		std::cout << "Station ID: " << ride.stationId << std::endl;
-//		std::cout << "Date: " << ride.ridedate << std::endl;
-//		std::cout << "User ID: " << ride.user_id << std::endl;
-//		std::cout << "-----------------------" << std::endl;
-//	}
-//
-//}

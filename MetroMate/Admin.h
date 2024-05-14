@@ -39,4 +39,6 @@ public:
 
     static void saveStationToDatabase(vector<Station>& Stations);
 
+    void viewAllRideLogs(vector<Ride>& rides);
+
 };

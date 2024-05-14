@@ -6,11 +6,12 @@
 #include <chrono>
 #include <sstream>
 #include <ctime>
+#include <iostream>
 #include <string>
 using namespace std;
 User::User() {
-	id = 0; 
-	balance = 0; 
+	id = 0;
+	balance = 0;
 	name = "";
 	userName = "";
 	password = "";
@@ -100,12 +101,10 @@ void User::updateInfo(vector<User>& users) {
 	bool goodPassword = false;
 	int choice;
 	bool q = false;
-	int signedInUserIndex = -1;
-	
-	cout << "Login Again to change Your info\n";
 	User signedInUser = Login(users, q); // Get the signed in user
 
-
+	// Find the index of the signed in user in the users vector
+	int signedInUserIndex = -1;
 	for (size_t i = 0; i < users.size(); ++i) {
 		if (users[i].userName == signedInUser.userName) {
 			signedInUserIndex = i;
@@ -190,6 +189,7 @@ void User::updateInfo(vector<User>& users) {
 	if (signedInUserIndex != -1) {
 		users[signedInUserIndex] = signedInUser;
 	}
+	cout << "Info updated Successfully\n";
 }
 tm User::addDaysToDate(const tm& date, int daysToAdd) {
 	// Convert the input date to a time_t
@@ -255,8 +255,8 @@ User User::Login(vector<User> users, bool& q) {
 					founduser.subscription = Subs.getSubscriptionForUser(founduser.id);
 					Station test;
 					vector <Station> stationss = test.RetrieveStationsFromDatabase();
-					test.addToAdjacency(stationss);	
-					vector<vector<string>> allPaths = test.findAllPaths(founduser.subscription.source_station,founduser.subscription.final_station);
+					test.addToAdjacency(stationss);
+					vector<vector<string>> allPaths = test.findAllPaths(founduser.subscription.source_station, founduser.subscription.final_station);
 					founduser.subscription.pathchoices = Subs.stationofpath(allPaths, founduser.subscription.path);
 					return founduser;
 					break;
@@ -270,15 +270,15 @@ User User::Login(vector<User> users, bool& q) {
 			else {
 				cout << "Login successful\n";
 				break;
-				
+
 			}
 		}
 	}
 	else {
 		// If max attempts reached without successful login, inform user and return empty string
 		cout << "Maximum login attempts reached. Exiting.\n";
-		
-		
+
+
 	}
 
 }
@@ -389,199 +389,253 @@ vector<User> User::RetrieveUsersFromDatabase()
 	return userList;
 }
 
-	
-
 Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Station>& stationss) {
-	vector<SubscriptionPlan> plans = SubscriptionPlan::RetrieveSubplansFromDatabase();
-	Station test;
-	int srcId, dstId;
-	string src, dst;
-	bool validSrcId = false;
-	while (!validSrcId) {
-		cout << "Choose ID of your Source Station: " << endl;
-		for (auto& station : stationss) {
-			cout << "ID : " << station.getID() << "  , Name:    " << station.getName() << endl;
-		}
+	int inn;
+	bool validInputt = false;
 
+	while (!validInputt) {
+		cout << "For Cash Wallet System Press 1 else 0: ";
+		cin >> inn;
 
-		cin >> srcId;
-		for (auto& station : stationss) {
-			if (station.getID() == srcId) {
-				validSrcId = true;
-				src = test.GetStationNameFromID(stationss, srcId);
-				break;
-			}
-		}
-		if (!validSrcId) {
-			cout << "Invalid station ID. Please choose a valid ID from the list." << endl;
-		}
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	}
-
-	bool validDstId = false;
-	while (!validDstId) {
-		cout << "Choose ID of your Destination Station:" << endl;
-		for (auto& station : stationss) {
-			cout << "ID : " << station.getID() << "  , Name:    " << station.getName() << endl;
-		}
-
-		cin >> dstId;
-
-
-		for (auto& station : stationss) {
-			if (station.getID() == dstId) {
-				validDstId = true;
-				dst = test.GetStationNameFromID(stationss, dstId);
-				break;
-			}
-		}
-		if (dstId == srcId) {
-			cout << "Destination station ID cannot be the same as the source station ID." << endl;
-			cout << "Insert Another one \n ";
-			validDstId = false;
-		}
-		if (!validDstId) {
-			cout << "Invalid station ID. Please choose a valid ID from the list." << endl;
-		}
-
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	}
-
-
-	test.addToAdjacency(stationss);
-	vector<vector<string>> allPaths = test.findAllPaths(test.GetStationNameFromID(stationss, srcId), test.GetStationNameFromID(stationss, dstId));
-	string source = test.GetStationNameFromID(stationss, srcId);
-	string destination = test.GetStationNameFromID(stationss, dstId);
-	if (!allPaths.empty()) {
-		cout << "Shortest path between stations " << source << " and " << destination << ":" << endl;
-		for (const string& station : allPaths.front()) {
-			cout << station << "  ";
-		}
-		cout << endl << endl;
-
-		cout << "All paths between stations " << source << " and " << destination << ":" << endl;
-		for (size_t i = 0; i < allPaths.size(); ++i) {
-			cout << "Path " << i + 1 << ": ";
-			for (const string& station : allPaths[i]) {
-				cout << station << "    ";
-			}
-			cout << endl;
-		}
-	}
-	else {
-		cout << "No path found between stations " << source << " and " << destination << endl;
-	}
-	int pathchoice;
-	int length;
-	vector <string> pathsss;
-	while (true) {
-		cin >> pathchoice;
-		if (pathchoice > 0 && pathchoice <= allPaths.size()) {
-			length = test.FindLengthOfSpecificPath(pathchoice - 1);
-			 pathsss = subscription.stationofpath(allPaths, pathchoice - 1);
-			break;
-		}
-		else {
-
-			cout << "Invalid path choice. Please enter a valid path choice." << endl;
-		}
-	}
-
-
-	cout << "--------------------Available programs--------------------" << endl;
-	int count = 1;
-	map<int, string> planTypeMap;
-	set<int> uniqueTypes;
-
-	for (const auto& plan : plans) {
-		if (uniqueTypes.find(plan.getType()) == uniqueTypes.end()) {
-			count++; cout << "- " << plan.getType() << "- " << plan.getplan_name() << endl;
-			planTypeMap[count - 1] = plan.getplan_name();
-			uniqueTypes.insert(plan.getType());
-		}
-	}
-
-	int selectedType;
-	bool validInput = false;
-	while (!validInput) {
-		cout << "Please Select Number of Desired Program Type: ";
-		cin >> selectedType;
-
-		if (uniqueTypes.find(selectedType) != uniqueTypes.end()) {
-			validInput = true;
-		}
-		else {
-			cout << "Invalid input. Please enter a valid program type number." << endl;
+		if (cin.fail() || (inn != 0 && inn != 1)) {
+			cout << "Invalid input. Please enter 1 or 0." << endl;
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
-	}
-
-
-	cout << "--------------------Stages for Selected Program Type " << selectedType << "--------------------" << endl;
-	for (const auto& plan : plans) {
-		if (plan.getType() == selectedType && length <= plan.getNumStations()) {
-			cout << "Plan ID :  " << plan.getplan_id() << endl;
-			cout << "Plan Name: " << plan.getplan_name() << endl;
-			cout << "Stage: " << plan.getstages() << endl;
-			cout << "Price: " << plan.getPrice() << endl;
-			cout << "Duration: " << plan.getDuration() << " Months" << endl;
-			cout << "Number of Stations: " << plan.getNumStations() << endl;
-			cout << "--------------------------------------------" << endl;
+		else {
+			validInputt = true;
 		}
 	}
+	if (inn == 0) {
+		vector<SubscriptionPlan> plans = SubscriptionPlan::RetrieveSubplansFromDatabase();
+		Station test;
+		int srcId, dstId;
+		string src, dst;
+		bool validSrcId = false;
+		while (!validSrcId) {
+			cout << "Choose ID of your Source Station: " << endl;
+			for (auto& station : stationss) {
+				cout << "ID : " << station.getID() << "  , Name:    " << station.getName() << endl;
+			}
 
-	int planId;
-	string typee;
-	int durationn, remainingrides;
-	bool validId = false;
-	while (!validId) {
-		cout << "Please Choose ID Of Desired Plan: ";
-		cin >> planId;
+
+			cin >> srcId;
+			for (auto& station : stationss) {
+				if (station.getID() == srcId) {
+					validSrcId = true;
+					src = test.GetStationNameFromID(stationss, srcId);
+					break;
+				}
+			}
+			if (!validSrcId) {
+				cout << "Invalid station ID. Please choose a valid ID from the list." << endl;
+			}
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+
+		bool validDstId = false;
+		while (!validDstId) {
+			cout << "Choose ID of your Destination Station:" << endl;
+			cin >> dstId;
+
+
+			for (auto& station : stationss) {
+				if (station.getID() == dstId) {
+					validDstId = true;
+					dst = test.GetStationNameFromID(stationss, dstId);
+					break;
+				}
+			}
+			if (dstId == srcId) {
+				cout << "Destination station ID cannot be the same as the source station ID." << endl;
+				cout << "Insert Another one \n ";
+				validDstId = false;
+			}
+			if (!validDstId) {
+				cout << "Invalid station ID. Please choose a valid ID from the list." << endl;
+			}
+
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+
+
+		test.addToAdjacency(stationss);
+		vector<vector<string>> allPaths = test.findAllPaths(test.GetStationNameFromID(stationss, srcId), test.GetStationNameFromID(stationss, dstId));
+		string source = test.GetStationNameFromID(stationss, srcId);
+		string destination = test.GetStationNameFromID(stationss, dstId);
+		if (!allPaths.empty()) {
+			cout << "Shortest path between stations " << source << " and " << destination << ":" << endl;
+			for (const string& station : allPaths.front()) {
+				cout << station << "  ";
+			}
+			cout << endl << endl;
+
+			cout << "All paths between stations " << source << " and " << destination << ":" << endl;
+			for (size_t i = 0; i < allPaths.size(); ++i) {
+				cout << "Path " << i + 1 << ": ";
+				for (const string& station : allPaths[i]) {
+					cout << station << "    ";
+				}
+				cout << endl;
+			}
+		}
+		else {
+			cout << "No path found between stations " << source << " and " << destination << endl;
+		}
+		int pathchoice;
+		int length;
+		vector <string> pathsss;
+		while (true) {
+			cin >> pathchoice;
+			if (pathchoice > 0 && pathchoice <= allPaths.size()) {
+				length = test.FindLengthOfSpecificPath(pathchoice - 1);
+				pathsss = subscription.stationofpath(allPaths, pathchoice - 1);
+				break;
+			}
+			else {
+
+				cout << "Invalid path choice. Please enter a valid path choice." << endl;
+			}
+		}
+
+
+		cout << "--------------------Available programs--------------------" << endl;
+		int count = 1;
+		map<int, string> planTypeMap;
+		set<int> uniqueTypes;
 
 		for (const auto& plan : plans) {
-			if (plan.getplan_id() == planId && plan.getType() == selectedType && length <= plan.getNumStations()) {
-				validId = true;
-				typee = plan.getplan_name();
-				durationn = plan.getDuration();
-				remainingrides = plan.gettrips();
-				break;
+			if (plan.getplan_name() == "Cash Wallet Cards") {
+				continue;
+			}
+
+			if (uniqueTypes.find(plan.getType()) == uniqueTypes.end()) {
+				count++;
+				cout << "- " << plan.getType() << "- " << plan.getplan_name() << endl;
+				planTypeMap[count - 1] = plan.getplan_name();
+				uniqueTypes.insert(plan.getType());
 			}
 		}
 
-		if (!validId) {
-			cout << "Invalid input. Please enter a valid plan ID for the selected program type." << endl;
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		int selectedType;
+		bool validInput = false;
+		while (!validInput) {
+			cout << "Please Select Number of Desired Program Type: ";
+			cin >> selectedType;
+
+			if (planTypeMap.find(selectedType) != planTypeMap.end()) {
+				validInput = true;
+			}
+			else {
+				cout << "Invalid input. Please enter a valid program type number." << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
 		}
+
+
+		cout << "--------------------Stages for Selected Program Type " << selectedType << "--------------------" << endl;
+		for (const auto& plan : plans) {
+			if (plan.getType() == selectedType && length <= plan.getNumStations()) {
+				cout << "Plan ID :  " << plan.getplan_id() << endl;
+				cout << "Plan Name: " << plan.getplan_name() << endl;
+				cout << "Stage: " << plan.getstages() << endl;
+				cout << "Price: " << plan.getPrice() << endl;
+				cout << "Duration: " << plan.getDuration() << " Months" << endl;
+				cout << "Number of Stations: " << plan.getNumStations() << endl;
+				cout << "--------------------------------------------" << endl;
+			}
+		}
+
+		int planId;
+		string typee;
+		int durationn, remainingrides;
+		bool validId = false;
+		while (!validId) {
+			cout << "Please Choose ID Of Desired Plan: ";
+			cin >> planId;
+
+			for (const auto& plan : plans) {
+				if (plan.getplan_id() == planId && plan.getType() == selectedType && length <= plan.getNumStations()) {
+					validId = true;
+					typee = plan.getplan_name();
+					durationn = plan.getDuration();
+					remainingrides = plan.gettrips();
+					break;
+				}
+			}
+
+			if (!validId) {
+				cout << "Invalid input. Please enter a valid plan ID for the selected program type." << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+		cout << "-------------------------------------\n";
+		cout << "Subscription Done Successfully :) \n";
+		time_t currentTime = time(nullptr);
+		tm currentDate;
+		localtime_s(&currentDate, &currentTime);
+		stringstream currentDateString;
+		currentDateString << (currentDate.tm_year + 1900) << "/" << (currentDate.tm_mon + 1) << "/" << currentDate.tm_mday;
+
+		string currentDateStr = currentDateString.str();
+		tm newDate = addDaysToDate(currentDate, durationn * 30);
+		stringstream newDateString;
+		newDateString << (newDate.tm_year + 1900) << "/" << (newDate.tm_mon + 1) << "/" << newDate.tm_mday;
+
+
+
+		string newDateStr = newDateString.str();
+
+
+		int sub_id = z.size() + 1;
+		Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst, pathchoice - 1);
+		z.push_back(s);
+		user.subId = sub_id;
+		user.subscription = s;
+		user.subscription.pathchoices = pathsss;
+		return s;
+
 	}
-	cout << "-------------------------------------\n";
-	cout << "Subscription Done Successfully :) \n";
-	time_t currentTime = time(nullptr);
-	tm currentDate;
-	localtime_s(&currentDate, &currentTime);
-	stringstream currentDateString;
-	currentDateString << (currentDate.tm_year + 1900) << "/" << (currentDate.tm_mon + 1) << "/" << currentDate.tm_mday;
+	else {
+		int cardlimit;
+		bool validInput = false;
 
-	string currentDateStr = currentDateString.str();
-	tm newDate = addDaysToDate(currentDate, durationn * 30);
-	stringstream newDateString;
-	newDateString << (newDate.tm_year + 1900) << "/" << (newDate.tm_mon + 1) << "/" << newDate.tm_mday;
+		while (!validInput) {
+			cout << "Enter Balance to Add to your Card (Max 400, Multiple of 10): ";
+			cin >> cardlimit;
+
+			if (cin.fail() || cardlimit < 0 || cardlimit > 400 || cardlimit % 10 != 0) {
+				cout << "Invalid input. Please enter a value between 0 and 400 that is a multiple of 10." << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			else {
+				validInput = true;
+			}
+		}
+		user.balance = cardlimit;
+		time_t currentTime = time(nullptr);
+		tm currentDate;
+		localtime_s(&currentDate, &currentTime);
+		stringstream currentDateString;
+		currentDateString << (currentDate.tm_year + 1900) << "/" << (currentDate.tm_mon + 1) << "/" << currentDate.tm_mday;
+
+		string currentDateStr = currentDateString.str();
+
+		int sub_id = z.size() + 1;
+		Subscription  s(sub_id, "Cash Wallet Cards", currentDateStr, " ", 999999, user.id, 13, " ", " ", 0);
+		z.push_back(s);
+		user.subId = sub_id;
+		user.subscription = s;
+		return s;
 
 
+	}
 
-	string newDateStr = newDateString.str();
-
-
-	int sub_id = z.size() + 1;
-	Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst,pathchoice-1);
-	z.push_back(s);
-	user.subId = sub_id;
-	user.subscription = s;
-	user.subscription.pathchoices = pathsss;
-	return s;
 }
 void User::renewSub(int subscid, vector <Subscription>& z, User& o, vector <SubscriptionPlan> plans) {
 	string ptype;
@@ -591,7 +645,10 @@ void User::renewSub(int subscid, vector <Subscription>& z, User& o, vector <Subs
 			cout << "Subscription ID: " << w.ID << endl;
 			cout << "Subscription Type: " << w.Type << endl;
 			cout << "Subscription Start Date: " << w.Sub_datee << endl;
-			cout << "Subscription End Date: " << w.End_datee << endl;
+			if (w.Type != "Cash Wallet Cards")
+			{
+				cout << "Subscription End Date: " << w.End_datee << endl;
+			}
 			cout << "Remaining Rides: " << w.remaining_rides << endl;
 			ptype = w.Type;
 
@@ -695,9 +752,24 @@ void User::renewSub(int subscid, vector <Subscription>& z, User& o, vector <Subs
 	}
 	else if (ptype == "Cash Wallet Cards")
 	{
+		int cardlimit;
+		bool validInput = false;
 
-		cout << "Your Card charged to 400 :) \n";
-		//		o.balance = 400;
+		while (!validInput) {
+			cout << "Enter Balance to Add to your Card (Max 400, Multiple of 10): ";
+			cin >> cardlimit;
+
+			if (cin.fail() || cardlimit < 0 || cardlimit > 400 || cardlimit % 10 != 0 || (o.balance + cardlimit) > 400) {
+				cout << "Invalid input. Please enter a value between 0 and 400 that is a multiple of 10 and ensures total balance does not exceed 400." << endl;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			else {
+				validInput = true;
+				cout << "Done Successfully \n";
+			}
+		}
+
 
 	}
 	else {
@@ -718,13 +790,14 @@ void User::renewSub(int subscid, vector <Subscription>& z, User& o, vector <Subs
 
 
 	}
+	if (o.subscription.Type != "Cash Wallet Cards") {
+		for (auto& subs : z) {
 
-	for (auto& subs : z) {
+			if (subs.ID == o.subscription.ID) {
+				subs.End_datee = o.subscription.End_datee;
+				subs.remaining_rides = o.subscription.remaining_rides;
 
-		if (subs.ID == o.subscription.ID) {
-			subs.End_datee = o.subscription.End_datee;
-			subs.remaining_rides = o.subscription.remaining_rides;
-
+			}
 		}
 	}
 
@@ -743,12 +816,13 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 	Station test;
 	int stationid = test.GetStationIdFromName(stations, source);
 	int rideid = rides.size() + 1;
-	Ride s(rideid, source, destination, stationid, currentDateStr, user.id);
-	rides.push_back(s);
-	user.ride.push_back(s);
+	int fare;
+
+
 
 	if (user.subscription.Type == "Cash Wallet Cards")
 	{
+
 		test.addToAdjacency(stations);
 		vector<vector<string>> allPaths = test.findAllPaths(source, destination);
 
@@ -790,6 +864,8 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			{
 				if (sts.getID() == stationid) {
 					sts.totalIncome += 6;
+					fare = 6;
+					user.balance -= fare;
 				}
 			}
 		}
@@ -798,6 +874,8 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			{
 				if (sts.getID() == stationid) {
 					sts.totalIncome += 8;
+					fare = 8;
+					user.balance -= fare;
 				}
 			}
 		}
@@ -807,6 +885,8 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			{
 				if (sts.getID() == stationid) {
 					sts.totalIncome += 12;
+					fare = 12;
+					user.balance -= fare;
 				}
 			}
 		}
@@ -815,6 +895,8 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			{
 				if (sts.getID() == stationid) {
 					sts.totalIncome += 15;
+					fare = 15;
+					user.balance -= fare;
 				}
 			}
 		}
@@ -832,9 +914,13 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 			if (sts.getID() == stationid) {
 				sts.numOfPassengers++;
 				sts.numOfSoldTickets++;
+				fare = 0;
 			}
 		}
 	}
+	Ride s(rideid, source, destination, stationid, currentDateStr, user.id, fare);
+	rides.push_back(s);
+	user.ride.push_back(s);
 	cout << "Have A Nice Dayy \n";
 }
 Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& user, vector<Station> stations)
@@ -856,25 +942,13 @@ void User::viewRide(User& user) {
 		cout << "Ride Source : " << user.ride[i].source << endl;
 		cout << "Ride Destination : " << user.ride[i].destination << endl;
 		cout << "Ride Date : " << user.ride[i].ridedate << endl;
-
+		cout << "Ride Fare : " << user.ride[i].fare << endl;
 	}
-
-
 }
-
-
-
-
-
-
-//int main()
-//{
-//	User user;
-//	vector<User> userList = user.RetrieveUsersFromDatabase();
-//	bool signedin = true;
-//	user.updateInfo(userList);
-//	user.saveUsersToDatabase(userList);
-//	
-//}
-
-
+int main()
+{
+	User user;
+	vector<User> users = user.RetrieveUsersFromDatabase();
+	user.updateInfo(users);
+	user.saveUsersToDatabase(users);
+}

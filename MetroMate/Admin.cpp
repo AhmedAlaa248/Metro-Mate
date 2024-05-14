@@ -1,4 +1,5 @@
 #include "Admin.h"
+#include "Validator.h"
 #include<iostream>
 #include"sqlite/sqlite3.h"
 #include "map"
@@ -12,15 +13,38 @@ using namespace std;
 Admin::Admin()
 {
 }
-void Admin::viewUser( vector<User>& users)
+
+//user functions
+/**
+ * veiwUser:view user details by ID.
+ * @param users Vector of User objects.
+ * The function prompts for a user ID, searches for the user in the vector,
+ * and prints their details if found
+ * If the user ID is not found, it prompts to try again.
+ */
+void Admin::viewUser(vector<User>& users)
 {
     bool userfound = false;
+
+    // Empty Users Vector
+    if (users.empty()) {
+        cout << "No users available to view." << endl;
+        return;
+    }
     while (!userfound)
     {
-      
         cout << "Enter the User ID you want to view it's details" << endl;
         int userID;
         cin >> userID;
+
+        //Non-Numeric Input
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a numeric ID." << endl;
+            continue;
+        }
+
         for (const auto& user : users)
         {
             if (user.id == userID)
@@ -43,32 +67,64 @@ void Admin::viewUser( vector<User>& users)
     }
 
 }
-void Admin::deleteUser( vector<User>& users)
-{
+
+/**
+ * deleteuser:Deletes a user by ID from a vector of User objects.
+ * Prompts for user ID, removes if found, and displays status.
+ */
+void Admin::deleteUser(vector<User>& users) {
+    // Display all users before deletion
     Admin::viewAllUsers(users);
-    bool userfound = false;
-    while (!userfound)
-    {
-        cout << "Enter the User ID you want to delete" << endl;
+
+    bool userFound = false;
+
+    // Check if users vector is empty
+    if (users.empty()) {
+        cout << "No users available to delete." << endl;
+        return;
+    }
+
+    while (!userFound) {
+        cout << "Enter the User ID you want to delete: ";
         int userID;
         cin >> userID;
 
+        // Handle non-numeric input for user ID
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a numeric ID." << endl;
+            continue;
+        }
 
         for (auto it = users.begin(); it != users.end(); ++it) {
             if (it->id == userID) {
+                // Delete user if ID is found
                 users.erase(it);
                 cout << "User deleted successfully." << endl;
-                userfound = true;
+                userFound = true;
                 break;
             }
         }
-        if (!userfound)
-            cout << "User not found." << endl;
-    }
 
+        // Display message if user ID is not found
+        if (!userFound) {
+            cout << "User not found. Please try again." << endl;
+        }
+    }
 }
-void Admin::viewAllUsers( vector<User>& users)
+
+/*
+* viewall users through vector
+*/
+void Admin::viewAllUsers(vector<User>& users)
 {
+    //Empty Users Vector
+    if (users.empty()) {
+        cout << "No users available." << endl;
+        return;
+    }
+    //non empty
     for (const auto& user : users)
     {
         cout << "User Details:" << endl;
@@ -82,28 +138,89 @@ void Admin::viewAllUsers( vector<User>& users)
         cout << "Ride ID: " << user.rideId << endl;
     }
 }
+
+/**
+ * editUser: Function to edit user details by ID.
+ * @param: user vector
+ * Updates the user's information if the ID is found in the users vector.
+ */
 void Admin::editUser(vector<User>& users) {
+    // Display all users before editing
     viewAllUsers(users);
-    int userID;
-    bool userFound = false;
+
+    int userID, newBalance = 0;
+    bool userFound = false, goodPassword = false;
+    Validator validator;
+    string newName, newEmail, newPassword, newUsername;
 
     while (!userFound) {
         cout << "Enter the User ID you want to edit " << endl;
         cin >> userID;
-        string newName, newEmail, newPassword, newUsername;
-        int newBalance = 0;
+
+        // Handle non-numeric input for user ID
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a numeric ID." << endl;
+            continue;
+        }
+
         cout << "Enter the new name: ";
         cin >> newName;
-        cout << "Enter the new Username: ";
-        cin >> newUsername;
-        cout << "Enter the new email: ";
-        cin >> newEmail;
-        cout << "Enter the new password: ";
-        cin >> newPassword;
+
+        // Validate new username
+        while (true) {
+            cout << "Enter your username:\n";
+            cin >> newUsername;
+
+            if (!validator.UsedUserName(newUsername)) {
+                break;
+            }
+            else {
+                cout << "Username already taken, please try again\n";
+            }
+        }
+
+        // Validate new email
+        while (true) {
+            cout << "Enter your email:\n";
+            cin >> newEmail;
+
+            if (validator.isValidEmailAddress(newEmail)) {
+                break;
+            }
+            else {
+                cout << "Invalid email, please try again\n";
+            }
+        }
+
+        // Validate new password
+        while (true) {
+            cout << "Enter new password:\n";
+            cin >> newPassword;
+
+            cout << "Confirm password:\n";
+            string confirmPassword;
+            cin >> confirmPassword;
+
+            if (newPassword != confirmPassword) {
+                cout << "Passwords do not match!\n";
+                continue;
+            }
+
+            if (!validator.isStrongPassword(newPassword)) {
+                cout << "Password is weak. Please choose a stronger one.\n";
+                continue;
+            }
+
+            goodPassword = true;
+            break;
+        }
+
         cout << "Enter the new balance: ";
         cin >> newBalance;
 
-
+        // Update user information if ID is found
         for (auto& user : users) {
             if (user.id == userID) {
                 user.name = newName;
@@ -123,7 +240,6 @@ void Admin::editUser(vector<User>& users) {
         }
     }
 }
-
 
 void Admin::FareManagement(vector<SubscriptionPlan>& plans) {
 
@@ -196,79 +312,6 @@ void Admin::FareManagement(vector<SubscriptionPlan>& plans) {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
-}
-
-void Admin::StationManagement(vector <Station>& q, vector<Subscription>& w) {
-    cout << "Here's the stations in the system :)\n";
-
-    //auto maxStation = max_element(q.begin(), q.end(),
-    //    [](const Station& a, const Station& b) {
-    //         Split the line numbers by comma and find the maximum
-    //        vector<int> lineNumsA, lineNumsB;
-
-    //         Create stringstream from the line number string
-    //        stringstream ssA(a.getLineNum());
-    //        stringstream ssB(b.getLineNum());
-
-    //         Temporary variable to hold each individual line number
-    //        int num;
-
-    //         Extract line numbers from stringstream
-    //        while (ssA >> num) {
-    //            lineNumsA.push_back(num);
-    //            if (ssA.peek() == ',') ssA.ignore();
-    //        }
-
-    //        while (ssB >> num) {
-    //            lineNumsB.push_back(num);
-    //            if (ssB.peek() == ',') ssB.ignore();
-    //        }
-
-    //         Find the maximum line number
-    //        int maxLineNumA = *max_element(lineNumsA.begin(), lineNumsA.end());
-    //        int maxLineNumB = *max_element(lineNumsB.begin(), lineNumsB.end());
-
-    //        return maxLineNumA < maxLineNumB;
-    //    });
-
-    //int maxLineNumber = stoi(maxStation->getLineNum());
-    //cout << "Max Line Number: " << maxLineNumber << endl;
-
-    //for (size_t i = 1; i <=maxLineNumber  ; i++)
-    //{
-
-    //    Station::printDetailed(to_string(i), q);
-    //    
-    //}
-    //for (auto z: q)
-    //{
-    //    cout << z.getID() << "-> " << z.getName() << endl;
-    //}
-
-    //unordered_map<int, std::vector<Station>> stationsByMetroLine;
-
-    //for (const auto& station : q) {
-    //    stationsByMetroLine[station.getLineNum()].push_back(station);
-    //}
-
-    //// Print stations by metro line
-    //for ( auto& pair : stationsByMetroLine) {
-    //    int metroLine = pair.first;
-    //    vector<Station>& stationsOnLine = pair.second;
-
-    //    std::cout << "Metro Line " << metroLine << " Stations:" << std::endl;
-
-    //    for ( auto& station : stationsOnLine) {
-    //        cout << "Station ID: " << station.getID() << ", Name: " << station.getName() << std::endl;
-    //       
-    //    }
-
-    //    cout << endl;
-    //}
-    cout << "How do you want to view the Stations data? \n ";
-
-
-
 }
 
 int getMaxType(vector<SubscriptionPlan>& subplans) {
@@ -638,17 +681,22 @@ void Admin::editStation(vector<Station>& stations)
 }
 
 
+void Admin::viewAllRideLogs(vector<Ride>& rides)
+{
 
-int main() {
-    Station station;
-    Admin admin;
-    User user;
-    SubscriptionPlan subs;
-    vector<User> users= User::RetrieveUsersFromDatabase();
-    vector<Station>stations = station.RetrieveStationsFromDatabase();
-    vector<SubscriptionPlan> subplans = subs.RetrieveSubplansFromDatabase();
+
+    for (const auto& ride : rides) {
+        cout << "Ride Details:" << endl;
+        cout << "ID: " << ride.id << endl;
+        cout << "Source: " << ride.source << endl;
+        cout << "Destination: " << ride.destination << endl;
+        cout << "Station ID: " << ride.stationId << endl;
+        cout << "Date: " << ride.ridedate << endl;
+        cout << "User ID: " << ride.user_id << endl;
+        cout << "----------------------------------------------";
+        cout << endl; 
+    }
+
     
-    //admin.addStation(stations);
-  admin.deleteStation(stations);
-  station.saveStationToDatabase(stations);
 }
+
