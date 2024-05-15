@@ -49,7 +49,7 @@ void User::Register(vector<User>& users, User& user)
 	}
 
 
-	user.balance = 0;
+	user.balance = 100000000;
 	user.subId = 0;
 	user.rideId = 0;
 	while (true)
@@ -395,7 +395,7 @@ vector<User> User::RetrieveUsersFromDatabase()
 	return userList;
 }
 
-Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Station>& stationss) {
+Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Station>& stationss, vector <User>& userss) {
 	int inn;
 	bool validInputt = false;
 	int price;
@@ -612,7 +612,7 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 		user.subId = sub_id;
 		user.subscription = s;
 		user.subscription.pathchoices = pathsss;
-		for (auto& u : users) {
+		for (auto& u : userss) {
 			if (u.id == user.id) {
 				u.subId = sub_id;
 				u.balance -= price;
@@ -659,12 +659,12 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 		z.push_back(s);
 		user.subId = sub_id;
 		user.subscription = s;
-		for (auto& u : users) {
+		for (auto& u : userss) {
 			if (u.id == user.id) {
 				u.subId = sub_id;
 			}
 		}
-
+		
 		return s;
 		cout << "-------------------------------------\n";
 		cout << "Subscription Done Successfully :) \n";
@@ -959,14 +959,14 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 	cout << "Done Successfully \n";
 	cout << "Have A Nice Dayy \n";
 }
-Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& user, vector<Station> stations)
+Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& user, vector<Station> stations, vector <User>& userss)
 {
 
 	for (size_t i = 0; i < subscriptionsList.size(); ++i)
 	{
 		if (subscriptionsList[i].ID == user.subscription.ID) {
 			subscriptionsList.erase(subscriptionsList.begin() + i);
-			return purchaseSub(subscriptionsList, user, stations);
+			return purchaseSub(subscriptionsList, user, stations,userss);
 
 		}
 	}

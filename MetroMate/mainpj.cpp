@@ -42,11 +42,13 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 
 		break;
 	case 1:
-
-		cout << "Purchase Sub\n";
-		user.purchaseSub(subs, user, stations);
-
-
+		if (user.subId == 0) {
+			cout << "Purchase Sub\n";
+			user.purchaseSub(subs, user, stations, users);
+		}
+		else {
+			cout << "You Already Have Subscription :) \n";
+		}
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
@@ -78,7 +80,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 			Subscription::printsubdetails(user.subscription);
 			break;
 		case 2:
-			user.changeSub(subs, user, stations);
+			user.changeSub(subs, user, stations,users);
 			break;
 		case 3:
 			user.renewSub(user.subscription.ID, subs, user, plans);
@@ -326,7 +328,7 @@ int adminMenu()
 		case 4:
 			cout << "------------------\n";
 			while (true) {
-				cout << "1. View specific ride detail.\n2. View all rides.\n0. Return to main menu\n";
+				cout << "1. View specific user detail.\n2. View all rides.\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -370,7 +372,6 @@ int adminMenu()
 		}
 	}
 	saveAlltoDataBase(subscriptions, users, rides, subplans, stations);
-
 	return choice;
 
 

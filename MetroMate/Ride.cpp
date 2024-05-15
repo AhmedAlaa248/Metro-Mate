@@ -126,8 +126,6 @@ void Ride::saveRideToDatabase(vector<Ride>& rides)
 }
 vector<Ride> Ride::GetRidesForUser(int user_id) {
 	vector<Ride> user_rides;
-	cout << "Enter User id to show Rides For\n";
-	cin >> user_id;
 	sqlite3* db;
 	int rc = sqlite3_open("mydb_1_1.db", &db);
 

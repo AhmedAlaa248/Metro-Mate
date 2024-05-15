@@ -39,12 +39,12 @@ public:
 	void updateInfo(vector<User>& users);
 	User Login(vector<User> users, bool& q);
 
-	Subscription purchaseSub(vector <Subscription>&, User&, vector <Station>&);
+	Subscription purchaseSub(vector <Subscription>&, User&, vector <Station>&, vector <User>& userss);
 	void renewSub(int, vector <Subscription>&, User&, vector <SubscriptionPlan>);
 	tm addDaysToDate(const tm& date, int daysToAdd);
 	void checkIn(string, string, vector <Ride>&, vector <Station>&, User&);
 	void viewRide(User& user);
-	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations);
+	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations, vector <User>& userss);
 
 
 
