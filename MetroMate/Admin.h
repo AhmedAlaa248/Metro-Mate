@@ -8,15 +8,12 @@
 #include"Station.h"
 
 class Admin {
+
 public:
     Admin();
-
-    // Login function
     bool login(const std::string& name, const std::string& pass);
-
-    // User management
-    void viewUser( vector<User>& users);
-    void deleteUser( vector<User>& users);
+    void viewUser(vector<User>& users);
+    void deleteUser(vector<User>& users);
     void viewAllUsers(vector<User>& users);
     void editUser(vector<User>& users);
     void FareManagement(vector<SubscriptionPlan>&);
@@ -28,7 +25,7 @@ public:
     void addSubscriptionPlan(vector<SubscriptionPlan>& SubscriptionPlans);
 
     void deleteSubscriptionPlan(vector<SubscriptionPlan>& subscriptionPlan);
-    
+
     void editSubscriptionPlan(vector<SubscriptionPlan>& SubscriptionPlan);
 
     void viewAllSubscriptionPlans(vector<SubscriptionPlan>& SubscriptionPlan);
@@ -37,7 +34,7 @@ public:
     void editStation(vector<Station>& stations);
     void viewAllStations(vector<Station> stations);
 
-    static void saveStationToDatabase(vector<Station>& Stations);
+    void saveStationToDatabase(vector<Station>&);
 
     void viewAllRideLogs(vector<Ride>& rides);
 

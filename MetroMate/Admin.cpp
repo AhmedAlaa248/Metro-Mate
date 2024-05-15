@@ -603,7 +603,7 @@ void Admin::deleteStation(vector<Station>& stations)
                 if (station.id != stId) {
                     size_t pos = station.link.find(deletedStationId);
                     if (pos != string::npos) {
-                        station.link.erase(pos, deletedStationId.length() + 1); 
+                        station.link.erase(pos, deletedStationId.length() + 1);
                     }
                 }
             }
@@ -712,10 +712,10 @@ void Admin::viewAllRideLogs(vector<Ride>& rides)
         cout << "Date: " << ride.ridedate << endl;
         cout << "User ID: " << ride.user_id << endl;
         cout << "----------------------------------------------";
-        cout << endl; 
+        cout << endl;
     }
 
-    
+
 }
 
 void Admin::viewStation(vector<Station>& stations) {
@@ -758,5 +758,3 @@ void Admin::viewStation(vector<Station>& stations) {
             cout << "Station not found. Please try again." << endl;
     }
 }
-
-

@@ -18,9 +18,9 @@ User::User() {
 	email = "";
 }
 
-void User::Register(vector<User>& users)
+void User::Register(vector<User>& users, User& user)
 {
-	User user;
+
 	Validator validator;
 	bool goodPassword = false;
 	cout << "************* Welcome to User Registration *************\n";
@@ -47,8 +47,8 @@ void User::Register(vector<User>& users)
 		}
 		break;
 	}
-	// Set the ID field to 0 for new users
-	user.id = 0;
+
+
 	user.balance = 0;
 	user.subId = 0;
 	user.rideId = 0;
@@ -93,7 +93,7 @@ void User::Register(vector<User>& users)
 	}
 
 	cout << "Account created successfully.\n\n";
-	// Assign the new user ID
+
 	user.id = newUserId;
 	users.push_back(user);
 }
@@ -248,6 +248,7 @@ User User::Login(vector<User> users, bool& q) {
 
 			for (const auto& user : users) {
 				if (user.userName == userName && user.password == password) {
+
 					validPassword = true;
 					q = true;
 					User founduser(user.id, user.name, user.email, user.password, user.balance, user.subId, user.rideId, user.userName);
@@ -257,10 +258,15 @@ User User::Login(vector<User> users, bool& q) {
 					vector <Station> stationss = test.RetrieveStationsFromDatabase();
 					test.addToAdjacency(stationss);
 					vector<vector<string>> allPaths = test.findAllPaths(founduser.subscription.source_station, founduser.subscription.final_station);
-					founduser.subscription.pathchoices = Subs.stationofpath(allPaths, founduser.subscription.path);
+
+					founduser.subscription.pathchoices = Subs.stationofpath(allPaths, founduser.subscription.path - 1);
 					return founduser;
+
 					break;
+
+
 				}
+
 			}
 
 			if (!validPassword) {
@@ -392,7 +398,7 @@ vector<User> User::RetrieveUsersFromDatabase()
 Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Station>& stationss) {
 	int inn;
 	bool validInputt = false;
-
+	int price;
 	while (!validInputt) {
 		cout << "For Cash Wallet System Press 1 else 0: ";
 		cin >> inn;
@@ -559,20 +565,29 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 
 			for (const auto& plan : plans) {
 				if (plan.getplan_id() == planId && plan.getType() == selectedType && length <= plan.getNumStations()) {
+
 					validId = true;
 					typee = plan.getplan_name();
 					durationn = plan.getDuration();
 					remainingrides = plan.gettrips();
+					price = plan.getPrice();
+					if (user.balance < price) {
+						validId = false;
+					}
+					else {
+						user.balance -= price;
+					}
 					break;
 				}
 			}
 
 			if (!validId) {
-				cout << "Invalid input. Please enter a valid plan ID for the selected program type." << endl;
+				cout << "Invalid input. Please Try Again . \n" << endl;
 				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
 		}
+
 		cout << "-------------------------------------\n";
 		cout << "Subscription Done Successfully :) \n";
 		time_t currentTime = time(nullptr);
@@ -592,11 +607,24 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 
 
 		int sub_id = z.size() + 1;
-		Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst, pathchoice - 1);
+		Subscription  s(sub_id, typee, currentDateStr, newDateStr, remainingrides, user.id, planId, src, dst, pathchoice);
 		z.push_back(s);
 		user.subId = sub_id;
 		user.subscription = s;
 		user.subscription.pathchoices = pathsss;
+		for (auto& u : users) {
+			if (u.id == user.id) {
+				u.subId = sub_id;
+				u.balance -= price;
+			}
+		}
+		for (auto& st : stationss) {
+			if (st.name == src) {
+				st.totalIncome += price;
+				st.numOfPassengers++;
+				st.numOfSoldTickets++;
+			}
+		}
 		return s;
 
 	}
@@ -631,8 +659,15 @@ Subscription User::purchaseSub(vector <Subscription>& z, User& user, vector <Sta
 		z.push_back(s);
 		user.subId = sub_id;
 		user.subscription = s;
-		return s;
+		for (auto& u : users) {
+			if (u.id == user.id) {
+				u.subId = sub_id;
+			}
+		}
 
+		return s;
+		cout << "-------------------------------------\n";
+		cout << "Subscription Done Successfully :) \n";
 
 	}
 
@@ -921,6 +956,7 @@ void User::checkIn(string source, string destination, vector<Ride>& rides, vecto
 	Ride s(rideid, source, destination, stationid, currentDateStr, user.id, fare);
 	rides.push_back(s);
 	user.ride.push_back(s);
+	cout << "Done Successfully \n";
 	cout << "Have A Nice Dayy \n";
 }
 Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& user, vector<Station> stations)
@@ -937,11 +973,13 @@ Subscription User::changeSub(vector <Subscription>& subscriptionsList, User& use
 	return Subscription();
 }
 void User::viewRide(User& user) {
+	cout << endl;
 	for (int i = 0; i < user.ride.size(); i++) {
 		cout << "Ride Id : " << user.ride[i].id << endl;
 		cout << "Ride Source : " << user.ride[i].source << endl;
 		cout << "Ride Destination : " << user.ride[i].destination << endl;
 		cout << "Ride Date : " << user.ride[i].ridedate << endl;
 		cout << "Ride Fare : " << user.ride[i].fare << endl;
+		cout << endl;
 	}
 }

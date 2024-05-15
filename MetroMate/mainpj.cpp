@@ -26,9 +26,6 @@ void saveAlltoDataBase(vector <Subscription>& subs, vector <User>& users, vector
 	subplan.saveSubplanToDatabase(subplans);
 	station.saveStationToDatabase(stations);
 }
-
-
-
 void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users, vector <Ride>& ridee, vector <SubscriptionPlan>& plans, vector <Station>& stations) {
 	Validator va;
 	int srcid, dstid; string src, dst;
@@ -45,6 +42,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 
 		break;
 	case 1:
+
 		cout << "Purchase Sub\n";
 		user.purchaseSub(subs, user, stations);
 
@@ -122,7 +120,7 @@ void userfunctions(vector <Subscription>& subs, User& user, vector <User>& users
 	case 4:
 		cout << "Rides history.\n";
 		user.viewRide(user);
-		
+
 		cout << endl;
 		cout << "Reffered to Main menu ! \n";
 		userfunctions(subs, user, users, ridee, plans, stations);
@@ -154,7 +152,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 		cin >> choice;
 		if (choice >= 1 && choice <= 3) {
 
-		break;
+			break;
 		}
 		else {
 			cout << "Invalid choice. Please enter a number between 1 and 3.\n";
@@ -168,10 +166,10 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 	case 1:
 		cout << "Login selected.\n";
 		user = user.Login(users, login);
-		cout << user.id << " " << user.userName << endl << user.subscription.final_station << "  " << user.ride[0].id;
+
 		if (login) {
-		userfunctions(subs, user, users, ridee, plans, stations);
-		break;
+			userfunctions(subs, user, users, ridee, plans, stations);
+			break;
 		}
 
 		else {
@@ -181,7 +179,7 @@ void usermenu(vector <Subscription>& subs, User& user, vector <User>& users, vec
 	case 2:
 
 		cout << "Register selected.\n";
-		user.Register(users);
+		user.Register(users, user);
 		userfunctions(subs, user, users, ridee, plans, stations);
 		break;
 	case 3:
@@ -203,13 +201,11 @@ int adminMenu()
 	User user;
 	Ride ride;
 	SubscriptionPlan subs;
-	Subscription sub;
 	vector<User> users = user.RetrieveUsersFromDatabase();
 	vector<Station> stations = station.RetrieveStationsFromDatabase();
 	vector<SubscriptionPlan> Subplans = subs.RetrieveSubplansFromDatabase();
 	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
 	int choice;
-	int user_id = 0;
 	bool loggedIn = true;
 	cout << "Hello boss!\n";
 	while (loggedIn) {
@@ -330,7 +326,7 @@ int adminMenu()
 		case 4:
 			cout << "------------------\n";
 			while (true) {
-				cout << "1. View specific user rides detail.\n2. View all rides.\n0. Return to main menu\n";
+				cout << "1. View specific ride detail.\n2. View all rides.\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -338,7 +334,7 @@ int adminMenu()
 				switch (choice)
 				{
 				case 1:
-					ride.GetRidesForUser(user_id);
+					admin.viewUser(users);
 					cout << "-----------------------------------\n";
 					break;
 				case 2:
@@ -444,4 +440,3 @@ int main() {
 	}
 
 }
-

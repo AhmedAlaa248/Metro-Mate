@@ -37,14 +37,13 @@ public:
 	int FindLengthOfSpecificPath(int);
 	vector<Station> RetrieveStationsFromDatabase();
 	vector<vector<string>> findAllPaths(string, string);
-	void addStation(vector<Station>& allStations);
+	void addStation(vector<Station>&);
 	void removeConnection(string, string);
 	void addConnection(string, string);
 	void dfs(string, string, vector<string>&, map<string, bool>&);
 	void removeStation(string station);
 	void addToAdjacency(vector<Station>& stations);
 	int GetStationIdFromName(vector<Station>, string name);
-	void saveStationToDatabase(vector<Station>& stations);
+	static void saveStationToDatabase(vector<Station>& stations);
 	bool checkStringsInVector(string, string, vector<string>);
 };
-
