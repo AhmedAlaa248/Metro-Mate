@@ -945,19 +945,3 @@ void User::viewRide(User& user) {
 		cout << "Ride Fare : " << user.ride[i].fare << endl;
 	}
 }
-int main()
-{
-	User user;
-	Station station;
-	SubscriptionPlan subplan;
-	Ride ride;
-	Subscription sub;
-	vector<Subscription> subscriptions = sub.RetrieveSubscriptionFromDatabase();
-	vector<User> users = user.RetrieveUsersFromDatabase();
-	vector<Station> stations = station.RetrieveStationsFromDatabase();
-	vector<SubscriptionPlan> subplans = subplan.RetrieveSubplansFromDatabase();
-	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
-
-	user.purchaseSub(subscriptions, user, stations);
-	sub.saveSubscriptionsToDatabase(subscriptions);
-}

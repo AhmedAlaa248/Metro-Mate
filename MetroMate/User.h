@@ -33,7 +33,7 @@ public:
 	}
 
 
-	void Register(vector<User>& users); // make the bool infoUpdated = true if successfully Registered
+	void Register(vector<User>& users);
 	static void saveUsersToDatabase(vector<User>& users);
 	static vector<User> RetrieveUsersFromDatabase();
 	void updateInfo(vector<User>& users);
@@ -45,7 +45,5 @@ public:
 	void checkIn(string, string, vector <Ride>&, vector <Station>&, User&);
 	void viewRide(User& user);
 	Subscription changeSub(vector <Subscription>& subscriptionsList, User& user, vector <Station> stations);
-
-
 
 };

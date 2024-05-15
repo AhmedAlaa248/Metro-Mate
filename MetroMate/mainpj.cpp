@@ -203,11 +203,13 @@ int adminMenu()
 	User user;
 	Ride ride;
 	SubscriptionPlan subs;
+	Subscription sub;
 	vector<User> users = user.RetrieveUsersFromDatabase();
 	vector<Station> stations = station.RetrieveStationsFromDatabase();
 	vector<SubscriptionPlan> Subplans = subs.RetrieveSubplansFromDatabase();
 	vector<Ride> rides = ride.RetrieveRidesFromDatabase();
 	int choice;
+	int user_id = 0;
 	bool loggedIn = true;
 	cout << "Hello boss!\n";
 	while (loggedIn) {
@@ -328,7 +330,7 @@ int adminMenu()
 		case 4:
 			cout << "------------------\n";
 			while (true) {
-				cout << "1. View specific ride detail.\n2. View all rides.\n0. Return to main menu\n";
+				cout << "1. View specific user rides detail.\n2. View all rides.\n0. Return to main menu\n";
 				cout << "Choose your choice:\n";
 				cin >> choice;
 				if (choice == 0)
@@ -336,7 +338,7 @@ int adminMenu()
 				switch (choice)
 				{
 				case 1:
-					admin.viewUser(users);
+					ride.GetRidesForUser(user_id);
 					cout << "-----------------------------------\n";
 					break;
 				case 2:
@@ -399,47 +401,47 @@ void adminLogin() {
 		}
 	}
 }
-//int main() {
-//	string username;
-//
-//	cout << "welcome to fcis stations, glad to see you back!\n";
-//	int choice;
-//	while (true) {
-//		cout << "1- admin\n";
-//		cout << "2- user\n";
-//		cout << "3- exit\n";
-//		cout << "enter your choice: ";
-//		cin >> choice;
-//
-//		if (choice >= 1 && choice <= 3) {
-//
-//			break;
-//		}
-//		else {
-//			cout << "invalid choice. please enter a number between 1 and 3.\n";
-//			cin.clear();
-//			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-//		}
-//	}
-//
-//	switch (choice) {
-//	case 1:
-//		adminLogin();
-//		break;
-//	case 2:
-//		usermenu(subscriptions, user, users, rides, subplans, stations);
-//		userfunctions(subscriptions, user, users, rides, subplans, stations);
-//
-//		break;
-//	case 3:
-//
-//		cout << "exiting...\n";
-//		break;
-//	default:
-//
-//		cout << "invalid choice.\n";
-//		break;
-//	}
-//
-//}
+int main() {
+	string username;
+
+	cout << "welcome to fcis stations, glad to see you back!\n";
+	int choice;
+	while (true) {
+		cout << "1- admin\n";
+		cout << "2- user\n";
+		cout << "3- exit\n";
+		cout << "enter your choice: ";
+		cin >> choice;
+
+		if (choice >= 1 && choice <= 3) {
+
+			break;
+		}
+		else {
+			cout << "invalid choice. please enter a number between 1 and 3.\n";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
+
+	switch (choice) {
+	case 1:
+		adminLogin();
+		break;
+	case 2:
+		usermenu(subscriptions, user, users, rides, subplans, stations);
+		userfunctions(subscriptions, user, users, rides, subplans, stations);
+
+		break;
+	case 3:
+
+		cout << "exiting...\n";
+		break;
+	default:
+
+		cout << "invalid choice.\n";
+		break;
+	}
+
+}
 
