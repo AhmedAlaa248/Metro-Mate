@@ -21,7 +21,7 @@ public:
 	int subId;
 	int rideId;
 	int cardb;
-	vector<User> users;
+	//vector<User> users;
 
 
 	User();
